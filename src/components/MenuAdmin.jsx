@@ -1,14 +1,40 @@
-import { useGlobalContext } from "../context/UserContext"
+import { useGlobalContext } from "../context/UserContext";
+import { useState } from "react";
 
 export default function MenuAdmin() {
-    const {isVisible ,toggleVisibility}=useGlobalContext();
+    const { isVisible, toggleVisibility, toggleVisibilityMachine, isVisibleMachine } = useGlobalContext();
+    const [selectedButton, setSelectedButton] = useState(null);
+
+    const handleButtonClick = (button) => {
+        if (selectedButton === button) {
+            setSelectedButton(null);
+        } else {
+            setSelectedButton(button);
+        }
+    };
+
     return (
         <>
             <div className="flex flex-wrap justify-center">
-                <button className="btn join-item m-2" onClick={toggleVisibility}>{isVisible ? 'Ocultar fromulario' : 'Registrar Usuario'}</button>
-                <button className="btn join-item m-2">Registrar maquinas</button>
-                <button className="btn join-item m-2">Registrar referencias</button>
+                <button
+                    className={`btn join-item m-2 ${selectedButton === 'user' ? 'bg-red-500 text-white' : ''}`}
+                    onClick={() => { handleButtonClick('user'); toggleVisibility(); }}
+                >
+                    {isVisible ? 'Ocultar formulario' : 'Registrar Usuario'}
+                </button>
+                <button
+                    className={`btn join-item m-2 ${selectedButton === 'machine' ? 'bg-red-500 text-white' : ''}`}
+                    onClick={() => { handleButtonClick('machine'); toggleVisibilityMachine(); }}
+                >
+                    {isVisibleMachine ? 'Ocultar formulario' : 'Registrar Maquina'}
+                </button>
+                <button
+                    className={`btn join-item m-2 ${selectedButton === 'reference' ? 'bg-red-500 text-white' : ''}`}
+                    onClick={() => handleButtonClick('reference')}
+                >
+                    Registrar referencias
+                </button>
             </div>
         </>
-    )
+    );
 }

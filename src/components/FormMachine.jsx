@@ -1,25 +1,25 @@
 import { useGlobalContext } from "../context/UserContext";
 
-export default function FormUsers() {
-  const { setUser } = useGlobalContext();
+export default function FormMachine() {
+  const { setMachine } = useGlobalContext();
 
   const sendData = async (e) => {
     e.preventDefault();
     let target = e.target;
-    let id_usuarios = target.id_usuarios.value;
-    let nombres = target.nombres.value;
-    let apellidos = target.apellidos.value;
-    let usuario = target.usuario.value;
+    let id_maquinas = target.id_maquinas.value;
+    let maquina = target.maquina.value;
+    let nombre_maquina = target.nombre_maquina.value;
+    let capacidad = target.capacidad.value;
 
     let createUser = {
-      id_usuarios: id_usuarios,
-      nombres: nombres,
-      apellidos: apellidos,
-      usuario: usuario
+      id_maquinas: id_maquinas,
+      maquina: maquina,
+      nombre_maquina: nombre_maquina,
+      capacidad: capacidad,
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/users', {
+      const response = await fetch('http://localhost:3000/api/machines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ export default function FormUsers() {
       if (response.ok) {
         console.log('Success:', data);
         alert("Creado exitosamente");
-        setUser(createUser);
+        setMachine(createUser);
         e.target.reset();
       } else {
         console.error('Error:', data);
@@ -46,35 +46,35 @@ export default function FormUsers() {
 
   return (
     <div className="p-10 content-center">
-      <h2 className="font-semibold text-center">Datos personales</h2>
+      <h2 className="font-semibold text-center">Registrar maquina</h2>
       <form className="flex flex-col" onSubmit={sendData}>
         <input
           type="number"
-          placeholder="Codigo"
-          name="id_usuarios"
+          placeholder="Codigo de maquina"
+          name="id_maquinas"
           required
-          className="input input-bordered input-primary w-full max-w-xl m-2"
+          className="input input-bordered input-warning w-full max-w-xl m-2"
         />
         <input
           type="text"
-          placeholder="Nombres"
-          name="nombres"
+          placeholder="Maquina"
+          name="maquina"
           required
-          className="input input-bordered input-primary w-full max-w-xl m-2"
+          className="input input-bordered input-warning w-full max-w-xl m-2"
         />
         <input
           type="text"
-          placeholder="Apellidos"
-          name="apellidos"
+          placeholder="Nombre de la maquina"
+          name="nombre_maquina"
           required
-          className="input input-bordered input-primary w-full max-w-xl m-2"
+          className="input input-bordered input-warning w-full max-w-xl m-2"
         />
         <input
           type="text"
-          placeholder="Usuario"
-          name="usuario"
+          placeholder="Capacidad de la maquina"
+          name="capacidad"
           required
-          className="input input-bordered input-primary w-full max-w-xl m-2"
+          className="input input-bordered input-warning w-full max-w-xl m-2"
         />
         <button className="btn btn-info w-full max-w-xl m-2">Enviar</button>
       </form>
