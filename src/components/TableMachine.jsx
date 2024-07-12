@@ -1,8 +1,8 @@
 import { useGlobalContext } from "../context/UserContext"
 
-export default function TableUser() {
+export default function TableMachine() {
 
-  const {usersData}= useGlobalContext();
+  const {data}= useGlobalContext();
 
   return (
     <>  
@@ -11,20 +11,18 @@ export default function TableUser() {
     <thead>
       <tr>
         <th>Codigo</th>
-        <td>Nombres</td>
-        <td>Apellidos</td>
-        <td>Usuario</td>
+        <td>Maquina</td>
+        <td>Capacidad</td>
         <th></th>
       </tr>
     </thead>
     <tbody>
     {
-      usersData.map(data => (
-        <tr key={data.id_usuarios}>
-          <th>{data.id_usuarios}</th>
-          <td>{data.nombres}</td>
-          <td>{data.apellidos}</td>
-          <td>{data.usuario}</td>
+      data.map(data => (
+        <tr key={data.id_maquinas}>
+          <th>{data.id_maquinas}</th>
+          <td>{data.nombre_maquina}</td>
+          <td>{data.capacidad}%</td>
           <td>
             <button className="btn btn-danger btn-sm m-2">Borrar</button>
             <button className="btn btn-primary btn-sm m-2">Editar</button>
