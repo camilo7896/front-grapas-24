@@ -14,7 +14,6 @@ useEffect(() => {
   fetch('http://localhost:3000/api/machines/')
     .then(response => response.json())
     .then(data => {
-      console.log('Fetched data:', data);
       setData(data);
     })
     .catch(error => console.error('Error fetching data:', error));
@@ -26,8 +25,18 @@ useEffect(() => {
     fetch('http://localhost:3000/api/users/')
      .then(response => response.json())
      .then(data => {
-       console.log('Fetched data:', data);
        setUsersData(data);
+     })
+     .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  //data references
+  const [referencesData, setReferencesData] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/reference/')
+     .then(response => response.json())
+     .then(data => {
+       setReferencesData(data);
      })
      .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -51,7 +60,8 @@ useEffect(() => {
 
      // Estado para controlar la visibilidad del componente
   const [isVisible, setIsVisible] = useState(false);
-  const [isVisibleMachine, setIsVisibleMachine] = useState(false);
+  const [isVisibleMachine, setIsVisibleMachine] = useState(false);  
+  const [isVisibleReference, setIsVisibleReference] = useState(false);
 
   // Función para alternar la visibilidad del componente
   const toggleVisibility = () => {
@@ -59,6 +69,9 @@ useEffect(() => {
   };
   const toggleVisibilityMachine = () => {
     setIsVisibleMachine(!isVisibleMachine);
+  };
+  const toggleVisibilityReference = () => {
+    setIsVisibleReference(!isVisibleReference);
   };
 
 
@@ -79,7 +92,11 @@ useEffect(() => {
            setData,
            usersData,
            setUsersData,
-          
+          referencesData,
+          setReferencesData,
+          isVisibleReference,
+          setIsVisibleReference,
+          toggleVisibilityReference,
            }}>
           {children}
         </GlobalContext.Provider>

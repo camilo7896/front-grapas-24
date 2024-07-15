@@ -6,6 +6,7 @@ import PicadoPage from './pages/PicadoPage'
 import UserContext from './context/UserContext'
 import Admin from './pages/AdminPage'
 import TableUser from './components/TableUser'
+import AsignationPage from './pages/AsignationPage'
 
 const route = createBrowserRouter(
   [
@@ -32,6 +33,10 @@ const route = createBrowserRouter(
     {
       path: '/userlist',
       element: <TableUser/>
+    },
+    {
+      path: '/asignation',
+      element: <AsignationPage/>
     }
   ]
 )

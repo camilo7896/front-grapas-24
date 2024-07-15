@@ -2,7 +2,7 @@ import { useGlobalContext } from "../context/UserContext";
 import { useState } from "react";
 
 export default function MenuAdmin() {
-    const { isVisible, toggleVisibility, toggleVisibilityMachine, isVisibleMachine } = useGlobalContext();
+    const { isVisible, toggleVisibility, toggleVisibilityMachine, isVisibleMachine, toggleVisibilityReference,isVisibleReference } = useGlobalContext();
     const [selectedButton, setSelectedButton] = useState(null);
 
     const handleButtonClick = (button) => {
@@ -15,6 +15,8 @@ export default function MenuAdmin() {
 
     return (
         <>
+      
+
             <div className="flex flex-wrap justify-center">
                 <button
                     className={`btn join-item m-2 ${selectedButton === 'user' ? 'bg-red-500 text-white' : ''}`}
@@ -30,11 +32,13 @@ export default function MenuAdmin() {
                 </button>
                 <button
                     className={`btn join-item m-2 ${selectedButton === 'reference' ? 'bg-red-500 text-white' : ''}`}
-                    onClick={() => handleButtonClick('reference')}
+                    onClick={() => { handleButtonClick('reference'); toggleVisibilityReference(); }}
                 >
-                    Registrar referencias
+                    {isVisibleReference ? 'Ocultar formulario' : 'Registrar Referencia'}
                 </button>
+                
             </div>
+            
         </>
     );
 }

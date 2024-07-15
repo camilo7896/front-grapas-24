@@ -26,6 +26,7 @@ export default function Navbar() {
           <li><Link to={'/picado'}>Picado</Link></li>
           <li><Link to={'/empaque'}>Empaque</Link></li>
           <li><Link to={'/admin'}>Administrar</Link></li>
+          <li><Link to={'/asignation'}>Asignaciones</Link></li>
         </ul>
       </div>
     </div>
