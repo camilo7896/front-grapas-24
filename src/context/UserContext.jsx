@@ -41,6 +41,27 @@ useEffect(() => {
      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
+  //Assignament
+  const [assignamentData, setAssignament] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/assignaments/')
+     .then(response => response.json())
+     .then(data => {
+       setAssignament(data);
+     })
+     .catch(error => console.error('Error fetching data:', error));
+  }, []);
+   //all assign
+   const [allassignamentData, setAllAssignament] = useState([]);
+   useEffect(() => {
+     fetch('http://localhost:3000/api/allassign/')
+      .then(response => response.json())
+      .then(data => {
+        setAllAssignament(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+   }, []);
+
   // Estado para crear usuarios
     const [user, setUser] = useState({
         codigo: '',
@@ -74,7 +95,26 @@ useEffect(() => {
     setIsVisibleReference(!isVisibleReference);
   };
 
+  const [capacity, setCapacity]= useState(0)
 
+
+  // Metodo para eliminar una asignacion
+  const fetchAssignations = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/allassign');
+      const data = await response.json();
+      setAllAssignament(data);
+    } catch (error) {
+      console.error('Error fetching assignations:', error);
+    }
+  };
+  // Efecto para cargar las asignaciones al montar el componente
+  useEffect(() => {
+    fetchAssignations();
+  }, []);
+const handleDeleteAssignation = async () => {
+ await console.log('Fetching assignments');
+}
 
       return (
         <GlobalContext.Provider value={{ 
@@ -97,6 +137,13 @@ useEffect(() => {
           isVisibleReference,
           setIsVisibleReference,
           toggleVisibilityReference,
+          assignamentData,
+          setAssignament,
+          capacity,
+          setCapacity,
+          allassignamentData,
+          setAllAssignament,
+          handleDeleteAssignation
            }}>
           {children}
         </GlobalContext.Provider>
