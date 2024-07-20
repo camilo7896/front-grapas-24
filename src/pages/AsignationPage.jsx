@@ -163,10 +163,9 @@ const AsignationPage = () => {
                   {/* Selección de hora */}
                   <input
                     type="number"
-                    className="input input-bordered w-full max-w-xs m-5"
+                    className={`input input-bordered w-full max-w-xs ${times[machineIndex]? 'bg-green-200' : 'bg-white'} m-5`}
                     value={times[machineIndex]}
-                    onChange={(e) => handleTimeChange(machineIndex, e.target.value)}
-                  />
+                    onChange={(e) => handleTimeChange(machineIndex, e.target.value)}/>
                 </div>
               ))}
               <button type="submit" className="btn btn-primary">Asignar</button>

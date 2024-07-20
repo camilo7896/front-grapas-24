@@ -8,6 +8,13 @@ export const GlobalContext = createContext();
 export const useGlobalContext =()=>useContext(GlobalContext);
 
 const UserContext = ({children})=>{
+
+  //Ruta conexiones
+  const rutaLocal = 'http://localhost:3000/api/';
+
+ 
+
+
 //data machines
 const [data, setData] = useState([]);
 useEffect(() => {
@@ -61,6 +68,23 @@ useEffect(() => {
       })
       .catch(error => console.error('Error fetching data:', error));
    }, []);
+
+   // registers
+   const [registerData, setRegisterData] = useState([]);
+   useEffect(() => {
+     fetch('http://localhost:3000/api/user-machines/')
+      .then(response => response.json())
+      .then(data => {
+        setRegisterData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+   }, []);
+
+
+
+  //  prueba
+
+  const [pruebaData, setPruebaData] = useState([]);
 
   // Estado para crear usuarios
     const [user, setUser] = useState({
@@ -143,7 +167,12 @@ const handleDeleteAssignation = async () => {
           setCapacity,
           allassignamentData,
           setAllAssignament,
-          handleDeleteAssignation
+          handleDeleteAssignation,
+          registerData,
+          setRegisterData,
+          pruebaData,
+          setPruebaData,
+          rutaLocal,
            }}>
           {children}
         </GlobalContext.Provider>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import 'daisyui/dist/full.css'; // Asegúrate de importar los estilos de DaisyUI
+import { useGlobalContext } from '../context/UserContext';
 
 const AssignationsTable = () => {
-
+  const { rutaLocal } = useGlobalContext();
 
   const [allAssignamentData, setAllAssignament] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,10 +11,12 @@ const AssignationsTable = () => {
   const [users, setUsers] = useState([]);
   const [machines, setMachines] = useState([]);
 
+console.log(allAssignamentData);
+
   // Función para obtener todas las asignaciones
   const fetchAssignations = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/allassign');
+      const response = await fetch(`${rutaLocal}allassign`);
       const data = await response.json();
       setAllAssignament(data);
     } catch (error) {
@@ -24,11 +27,11 @@ const AssignationsTable = () => {
   // Función para obtener usuarios y máquinas para los selects
   const fetchUsersAndMachines = async () => {
     try {
-      const usersResponse = await fetch('http://localhost:3000/api/users');
+      const usersResponse = await fetch(`${rutaLocal}users`);
       const usersData = await usersResponse.json();
       setUsers(usersData);
 
-      const machinesResponse = await fetch('http://localhost:3000/api/machines');
+      const machinesResponse = await fetch(`${rutaLocal}machines`);
       const machinesData = await machinesResponse.json();
       setMachines(machinesData);
     } catch (error) {
@@ -45,7 +48,7 @@ const AssignationsTable = () => {
   // Función para eliminar una asignación por su ID
   const handleDeleteAssignation = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/allassign/${id}`, {
+      const response = await fetch(`${rutaLocal}allassign/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
@@ -75,7 +78,7 @@ const AssignationsTable = () => {
   // Función para actualizar una asignación por su ID
   const handleUpdateAssignation = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/allassign/${currentAssignation.id}`, {
+      const response = await fetch(`${rutaLocal}allassign/${currentAssignation.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

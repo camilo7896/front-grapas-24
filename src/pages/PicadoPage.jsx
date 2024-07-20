@@ -1,4 +1,4 @@
-import FormRegisterPicado from "../components/FormRegisterPicado"
+import UserMachines from "../components/UserMachines"
 import MenuPicado from "../components/MenuPicado"
 import Navbar from "../components/Navbar"
 
@@ -12,7 +12,7 @@ const PicadoPage = () => {
         <div className="flex justify-center m-5">
           <MenuPicado />
         </div>
-       <FormRegisterPicado/>
+          <UserMachines/>
       </div>
     </>
   )
