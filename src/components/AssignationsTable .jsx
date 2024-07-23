@@ -3,7 +3,7 @@ import 'daisyui/dist/full.css'; // Asegúrate de importar los estilos de DaisyUI
 import { useGlobalContext } from '../context/UserContext';
 
 const AssignationsTable = () => {
-  const { rutaLocal } = useGlobalContext();
+  const { rutaLocal,allassignamentData } = useGlobalContext();
 
   const [allAssignamentData, setAllAssignament] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -12,6 +12,7 @@ const PicadoPage = () => {
         <div className="flex justify-center m-5">
           <MenuPicado />
         </div>
+        
           <UserMachines/>
       </div>
     </>

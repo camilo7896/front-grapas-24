@@ -9,14 +9,16 @@ import { useGlobalContext } from "../context/UserContext";
 
 
 export default function AdminPage() {
-  const { isVisible, isVisibleMachine,isVisibleReference } = useGlobalContext();
+  const { isVisible, isVisibleMachine, isVisibleReference } = useGlobalContext();
 
   return (
     <>
       <Navbar />
-      
-            <h2 className="text-center m-5 font-bold">Administrar aplicación</h2>
-            <MenuSelect/>
+
+      <h2 className="flex justify-center text-center m-5 font-bold">Administrar aplicación</h2>
+      <div className="flex flex-row flex-wrap justify-center">
+      <MenuSelect />
+      </div>
       <div className="flex justify-center m-5">
         <MenuAdmin />
       </div>
@@ -27,7 +29,7 @@ export default function AdminPage() {
         {isVisibleMachine && <FormMachine />}
       </div>
       <div className="flex justify-center">
-        {isVisibleReference && <FormReference/>}
+        {isVisibleReference && <FormReference />}
       </div>
     </>
   )

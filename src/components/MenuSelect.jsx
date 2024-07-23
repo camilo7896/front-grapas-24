@@ -10,7 +10,7 @@ export default function MenuSelect() {
 
 
     return (
-        <ul className="menu bg-base-100 flex flex-row flex-wrap justify-center rounded-box">
+        <ul className="menu bg-base-100 flex justify-center">
             <li>
                 <Link to={'/userlist'}>
                     <svg
