@@ -3,7 +3,7 @@ import 'daisyui/dist/full.css'; // Asegúrate de importar los estilos de DaisyUI
 import { useGlobalContext } from '../context/UserContext';
 
 const AssignationsTable = () => {
-  const { rutaLocal,allassignamentData } = useGlobalContext();
+  const { rutaLocal } = useGlobalContext();
 
   const [allAssignamentData, setAllAssignament] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,18 +109,18 @@ console.log(allAssignamentData);
         <table className="table table-xs table-pin-rows table-pin-cols text-center border border-gray-200 p-2">
           <thead>
             <tr>
-              <th>Nombres</th>
-              <td>Maquinas</td>
-              <td>Referencias</td>
-              <td>Horas asig</td>
+              <th>Codigo</th>
+              <td>Maquina</td>
+              <td>Referencia</td>
+              <td>H.asignada</td>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {allAssignamentData.map((data) => (
               <tr key={data.id}>
-                <th>{data.nombre_usuario}</th>
-                <td>{data.nombre_maquina}</td>
+                <th>{data.id_usuarios}</th>
+                <td>{data.maquina}</td>
                 <td>{data.nombre_referencia}</td>
                 <td>{data.horas_asignadas}</td>
                 <td>

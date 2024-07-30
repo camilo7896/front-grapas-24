@@ -15,7 +15,7 @@ const UserMachines = () => {
         if (userId) {
             const filtered = allassignamentData.filter(machine => machine.id_usuarios === parseInt(userId));
             setFilteredMachines(filtered);
-            setModalOpen(true); // Abre el modal al buscar
+            setModalOpen(true);
             setHorometroData(filtered.reduce((acc, machine) => ({
                 ...acc,
                 [machine.id]: {
@@ -23,7 +23,7 @@ const UserMachines = () => {
                     horometro_final: '',
                     observaciones: ''
                 }
-            }), {})); // Inicializa el estado de horómetros para cada máquina
+            }), {}));
         } else {
             setFilteredMachines([]);
         }
@@ -48,20 +48,19 @@ const UserMachines = () => {
     const handleModalSubmit = async () => {
         const currentTimeInColombia = moment().tz('America/Bogota').format();
     
-        // Crear una lista de datos para enviar
         const dataToSend = filteredMachines.map(machine => ({
             user_id: userId,
-            id_asignacion: machine.maquina, // Asegúrate de que este valor no sea `undefined` o `null`
+            id_asignacion: machine.maquina, // Asegúrate de que este valor sea el correcto
             horometro_inicial: horometroData[machine.id]?.horometro_inicial || 0,
             horometro_final: horometroData[machine.id]?.horometro_final || 0,
             observaciones: horometroData[machine.id]?.observaciones || '',
             registro_maquina: currentTimeInColombia,
-            id_usuarioRegistrador: machine.id_usuarios, // Asegúrate de que este valor no sea `undefined` o `null`
+            id_usuarioRegistrador: machine.id_usuarios,
             registro_referencia: machine.nombre_referencia,
-            hora_asignadaRegistrador: machine.horas_asignadas // Asegúrate de que este valor no sea `undefined` o `null`
+            hora_asignadaRegistrador: machine.horas_asignadas,
+            registro_standard:machine.id_standar
         }));
-    
-        // Asegúrate de que dataToSend sea un array
+
         if (!Array.isArray(dataToSend) || dataToSend.length === 0) {
             console.error('Data to send is not an array or is empty');
             return;

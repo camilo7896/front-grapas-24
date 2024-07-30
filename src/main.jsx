@@ -7,11 +7,17 @@ import UserContext from './context/UserContext'
 import Admin from './pages/AdminPage'
 import TableUser from './components/TableUser'
 import AsignationPage from './pages/AsignationPage'
+import EficencePage from './pages/EficencePage'
+import Login from './components/Login'
 
 const route = createBrowserRouter(
   [
     {path: '/',
       element: <HomePage/>,
+      errorElement: <h1>Error</h1>
+    },
+    {path: '/login',
+      element: <Login/>,
       errorElement: <h1>Error</h1>
     },
     {
@@ -37,6 +43,10 @@ const route = createBrowserRouter(
     {
       path: '/asignation',
       element: <AsignationPage/>
+    },
+    {
+      path: '/eficences',
+      element: <EficencePage/>
     }
   ]
 )

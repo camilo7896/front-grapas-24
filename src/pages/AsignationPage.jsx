@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGlobalContext } from "../context/UserContext";
 import Navbar from '../components/Navbar';
 import CapacityPanel from '../components/CapacityPanel';
@@ -9,8 +9,21 @@ const AsignationPage = () => {
   const [searchId, setSearchId] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [machines, setMachines] = useState(Array(5).fill(''));
-  const [references, setReferences] = useState(Array(5).fill('')); // Usar un array simple para referencias
-  const [times, setTimes] = useState(Array(5).fill('')); // Usar un array simple para tiempos
+  const [references, setReferences] = useState(Array(5).fill(''));
+  const [times, setTimes] = useState(Array(5).fill(''));
+  const [standards, setStandards] = useState(Array(5).fill(''));
+
+  useEffect(() => {
+    // Al seleccionar una máquina, actualizar el estándar correspondiente
+    machines.forEach((machine, index) => {
+      const selectedMachine = machinesData.find(m => m.id_maquinas === parseInt(machine));
+      if (selectedMachine) {
+        const newStandards = [...standards];
+        newStandards[index] = selectedMachine.estandar || '';
+        setStandards(newStandards);
+      }
+    });
+  }, [machines, machinesData]);
 
   const handleSearch = () => {
     const user = usersData.find(user => user.id_usuarios === parseInt(searchId));
@@ -18,33 +31,31 @@ const AsignationPage = () => {
   };
 
   const handleMachineChange = (index, value) => {
-    // Obtener la máquina seleccionada y su capacidad
     const selectedMachine = machinesData.find(machine => machine.id_maquinas === parseInt(value));
     const machineCapacity = selectedMachine ? selectedMachine.capacidad : 0;
 
-    // Calcular la diferencia entre la capacidad anterior y la nueva
     const currentMachineId = machines[index];
     const previousMachine = machinesData.find(machine => machine.id_maquinas === parseInt(currentMachineId));
     const previousCapacity = previousMachine ? previousMachine.capacidad : 0;
 
     const capacityDifference = machineCapacity - previousCapacity;
-
-    // Actualizar la capacidad total y el contexto
     setCapacity(prevCapacity => prevCapacity + capacityDifference);
 
-    // Actualizar el estado de las máquinas seleccionadas
     const newMachines = [...machines];
     newMachines[index] = value;
     setMachines(newMachines);
 
-    // Limpiar referencias al cambiar la máquina seleccionada
+    // Actualizar el estándar en el estado
+    const newStandards = [...standards];
+    newStandards[index] = selectedMachine ? selectedMachine.estandar || '' : '';
+    setStandards(newStandards);
+    
     const newReferences = [...references];
-    newReferences[index] = ''; // Limpiar la referencia para esta máquina
+    newReferences[index] = '';
     setReferences(newReferences);
 
-    // Limpiar la hora al cambiar la máquina seleccionada
     const newTimes = [...times];
-    newTimes[index] = ''; // Limpiar la hora para esta máquina
+    newTimes[index] = '';
     setTimes(newTimes);
   };
 
@@ -60,20 +71,27 @@ const AsignationPage = () => {
     setTimes(newTimes);
   };
 
+  const handleStandardChange = (machineIndex, value) => {
+    const newStandards = [...standards];
+    newStandards[machineIndex] = value;
+    setStandards(newStandards);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedUser) {
       alert('Por favor seleccione un usuario');
       return;
     }
-
+  
     const asignaciones = machines.map((machine, machineIndex) => ({
       id_usuarioAsignado: selectedUser.id_usuarios,
       id_maquinaAsignada: machine,
-      id_referenciaAsignada: references[machineIndex] || null, // Solo enviar referencia seleccionada o null si no hay selección
-      horas_asignadas: times[machineIndex] || null // Solo enviar la hora seleccionada o null si no hay selección
-    })).filter(asignacion => asignacion.id_maquinaAsignada); // Filtrar asignaciones sin máquina
-
+      id_referenciaAsignada: references[machineIndex] || null,
+      horas_asignadas: times[machineIndex] || null,
+      id_standar: standards[machineIndex] || null
+    })).filter(asignacion => asignacion.id_maquinaAsignada);
+  
     try {
       const response = await fetch('http://localhost:3000/api/assignations/multiple', {
         method: 'POST',
@@ -82,28 +100,28 @@ const AsignationPage = () => {
         },
         body: JSON.stringify(asignaciones)
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('Success:', data);
-        alert("Asignaciones creadas exitosamente");
-        setAssignament(data);
-        setMachines(Array(5).fill(''));
-        setReferences(Array(5).fill(''));
-        setTimes(Array(5).fill('')); // Reiniciar las horas
-        setCapacity(0); // Reiniciar la capacidad total
-      } else {
-        console.error('Error:', data);
+  
+      if (!response.ok) {
+        const errorText = await response.text(); // Obtener texto del error
+        console.error('Error:', errorText);
         alert("Error al crear las asignaciones");
+        return;
       }
+  
+      const data = await response.json();
+      console.log('Success:', data);
+      alert("Asignaciones creadas exitosamente");
+      setAssignament(data);
+      setMachines(Array(5).fill(''));
+      setReferences(Array(5).fill(''));
+      setTimes(Array(5).fill(''));
+      setStandards(Array(5).fill(''));
+      setCapacity(0);
     } catch (error) {
       console.error('Error:', error);
       alert("Error de conexión");
     }
   };
-
-  
 
   return (
     <>
@@ -121,20 +139,17 @@ const AsignationPage = () => {
             />
             <button className="btn btn-primary ml-2" onClick={handleSearch}>Buscar</button>
           </div>
-
+  
           {selectedUser && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Mostrar usuario seleccionado */}
               <div className='flex justify-center items-center flex-col'>
                 <h2 className="text-xl font-semibold">Usuario: {selectedUser.nombres} {selectedUser.apellidos}</h2>
                 <CapacityPanel />
               </div>
-
-              {/* Mostrar capacidad total */}
+  
               <p className="font-semibold">Capacidad Total Seleccionada: {capacity}%</p>
               {machines.map((machine, machineIndex) => (
                 <div key={machineIndex} className="space-y-2">
-                  {/* Selección de máquina */}
                   <select
                     className={`select select-bordered w-full max-w-xs ${machine ? 'bg-green-200' : 'bg-white'} m-5`}
                     value={machine}
@@ -143,11 +158,10 @@ const AsignationPage = () => {
                     <option value="">Seleccionar Máquina</option>
                     {machinesData.map(machine => (
                       <option key={machine.id_maquinas} value={machine.id_maquinas}>
-                        {machine.nombre_maquina} - Capacidad: {machine.capacidad}
+                        {machine.maquina} - Capacidad: {machine.capacidad}%
                       </option>
                     ))}
                   </select>
-                  {/* Selección de referencia */}
                   <select
                     className={`select select-bordered ${references[machineIndex] ? 'bg-green-200' : 'bg-white'} m-5`}
                     value={references[machineIndex]}
@@ -160,18 +174,25 @@ const AsignationPage = () => {
                       </option>
                     ))}
                   </select>
-                  {/* Selección de hora */}
                   <input
                     type="number"
-                    className={`input input-bordered w-full max-w-xs ${times[machineIndex]? 'bg-green-200' : 'bg-white'} m-5`}
+                    className={`input input-bordered w-full max-w-xs ${times[machineIndex] ? 'bg-green-200' : 'bg-white'} m-5`}
                     value={times[machineIndex]}
-                    onChange={(e) => handleTimeChange(machineIndex, e.target.value)}/>
+                    onChange={(e) => handleTimeChange(machineIndex, e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className={`input input-bordered w-full max-w-xs ${standards[machineIndex] ? 'bg-green-200' : 'bg-white'} m-5`}
+                    placeholder="Ingresar Estándar"
+                    value={standards[machineIndex]}
+                    onChange={(e) => handleStandardChange(machineIndex, e.target.value)}
+                  />
                 </div>
               ))}
               <button type="submit" className="btn btn-primary">Asignar</button>
             </form>
           )}
-<AssignationsTable/>
+          <AssignationsTable/>
         </div>
       </div>
     </>

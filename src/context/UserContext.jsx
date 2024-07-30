@@ -5,107 +5,131 @@ import { createContext, useContext, useState } from "react";
 
 export const GlobalContext = createContext();
 
-export const useGlobalContext =()=>useContext(GlobalContext);
+export const useGlobalContext = () => useContext(GlobalContext);
 
-const UserContext = ({children})=>{
+const UserContext = ({ children }) => {
+
+
+  // *********************** Estados del componente Eficiencia ************************************************************************
+
+  const [searchTermUser, setSearchTermUser] = useState('');
+  const [searchTermMachine, setSearchTermMachine] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [totalHours, setTotalHours] = useState(0);
+  const [totalStandard, setTotalStandard] = useState(0);
+  const [meta, setMeta] = useState(0);
+  const [efficiency, setEfficiency] = useState(0);
+  const [totalEfficiency, setTotalEfficiency] = useState(0);
+
+
+
+  // ***********************************************************************************************
 
   //Ruta conexiones
   const rutaLocal = 'http://localhost:3000/api/';
 
- 
+  // Loggin *******************************************************************+
 
+  // End Loggin ***************************************************************************************
 
-//data machines
-const [data, setData] = useState([]);
-useEffect(() => {
-  fetch('http://localhost:3000/api/machines/')
-    .then(response => response.json())
-    .then(data => {
-      setData(data);
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}, []);
+  //data machines
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/machines/')
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
-//data users
+  //data users
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
     fetch('http://localhost:3000/api/users/')
-     .then(response => response.json())
-     .then(data => {
-       setUsersData(data);
-     })
-     .catch(error => console.error('Error fetching data:', error));
+      .then(response => response.json())
+      .then(data => {
+        setUsersData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   //data references
   const [referencesData, setReferencesData] = useState([]);
   useEffect(() => {
     fetch('http://localhost:3000/api/reference/')
-     .then(response => response.json())
-     .then(data => {
-       setReferencesData(data);
-     })
-     .catch(error => console.error('Error fetching data:', error));
+      .then(response => response.json())
+      .then(data => {
+        setReferencesData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   //Assignament
   const [assignamentData, setAssignament] = useState([]);
   useEffect(() => {
     fetch('http://localhost:3000/api/assignaments/')
-     .then(response => response.json())
-     .then(data => {
-       setAssignament(data);
-     })
-     .catch(error => console.error('Error fetching data:', error));
+      .then(response => response.json())
+      .then(data => {
+        setAssignament(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
-   //all assign
-   const [allassignamentData, setAllAssignament] = useState([]);
-   useEffect(() => {
-     fetch('http://localhost:3000/api/allassign/')
+  //all assign
+  const [allassignamentData, setAllAssignament] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/allassign/')
       .then(response => response.json())
       .then(data => {
         setAllAssignament(data);
       })
       .catch(error => console.error('Error fetching data:', error));
-   }, []);
+  }, []);
 
-   // registers
-   const [registerData, setRegisterData] = useState([]);
-   useEffect(() => {
-     fetch('http://localhost:3000/api/user-machines/')
+  // registers
+  const [registerData, setRegisterData] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/user-machines/')
       .then(response => response.json())
       .then(data => {
         setRegisterData(data);
       })
       .catch(error => console.error('Error fetching data:', error));
-   }, []);
+  }, []);
 
 
 
-  //  prueba
+  //  Metodo para obtener todos los registros enviados
+  const [allRegisterData, setAllRegisterData] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/horometro-records')
+      .then(response => response.json())
+      .then(data => {
+        setAllRegisterData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
-  const [pruebaData, setPruebaData] = useState([]);
 
   // Estado para crear usuarios
-    const [user, setUser] = useState({
-        codigo: '',
-        nombres: '',
-        apellidos: '',
-        usuario: ''
-      });
+  const [user, setUser] = useState({
+    codigo: '',
+    nombres: '',
+    apellidos: '',
+    usuario: ''
+  });
 
-      // Estado para crear maquinas
-      const [machine, setMachine] = useState({
-        id_maquinas: '',
-        nombre_maquina: '',
-        capacidad: ''
-      });
+  // Estado para crear maquinas
+  const [machine, setMachine] = useState({
+    id_maquinas: '',
+    nombre_maquina: '',
+    capacidad: ''
+  });
 
-      // Estado para controlar la visibilidad del componente
-
-     // Estado para controlar la visibilidad del componente
+  // Estado para controlar la visibilidad del componente
   const [isVisible, setIsVisible] = useState(false);
-  const [isVisibleMachine, setIsVisibleMachine] = useState(false);  
+  const [isVisibleMachine, setIsVisibleMachine] = useState(false);
   const [isVisibleReference, setIsVisibleReference] = useState(false);
 
   // Función para alternar la visibilidad del componente
@@ -119,7 +143,7 @@ useEffect(() => {
     setIsVisibleReference(!isVisibleReference);
   };
 
-  const [capacity, setCapacity]= useState(0)
+  const [capacity, setCapacity] = useState(0)
 
 
   // Metodo para eliminar una asignacion
@@ -136,47 +160,71 @@ useEffect(() => {
   useEffect(() => {
     fetchAssignations();
   }, []);
-const handleDeleteAssignation = async () => {
- await console.log('Fetching assignments');
-}
+  const handleDeleteAssignation = () => {
+    console.log('Fetching assignments');
+  }
 
-      return (
-        <GlobalContext.Provider value={{ 
-          user, 
-          setUser,
-          isVisible ,
-          setIsVisible,
-          toggleVisibility, 
-          isVisibleMachine,
-          setIsVisibleMachine,
-          toggleVisibilityMachine,
-           machine,
-           setMachine,
-           data,
-           setData,
-           usersData,
-           setUsersData,
-          referencesData,
-          setReferencesData,
-          isVisibleReference,
-          setIsVisibleReference,
-          toggleVisibilityReference,
-          assignamentData,
-          setAssignament,
-          capacity,
-          setCapacity,
-          allassignamentData,
-          setAllAssignament,
-          handleDeleteAssignation,
-          registerData,
-          setRegisterData,
-          pruebaData,
-          setPruebaData,
-          rutaLocal,
-           }}>
-          {children}
-        </GlobalContext.Provider>
-      );
+
+
+
+
+
+
+  return (
+    <GlobalContext.Provider value={{
+      user,
+      setUser,
+      isVisible,
+      setIsVisible,
+      toggleVisibility,
+      isVisibleMachine,
+      setIsVisibleMachine,
+      toggleVisibilityMachine,
+      machine,
+      setMachine,
+      data,
+      setData,
+      usersData,
+      setUsersData,
+      referencesData,
+      setReferencesData,
+      isVisibleReference,
+      setIsVisibleReference,
+      toggleVisibilityReference,
+      assignamentData,
+      setAssignament,
+      capacity,
+      setCapacity,
+      allassignamentData,
+      setAllAssignament,
+      handleDeleteAssignation,
+      registerData,
+      setRegisterData,
+      rutaLocal,
+      allRegisterData,
+      setAllRegisterData,
+      totalEfficiency,
+      setTotalEfficiency,
+      searchTermUser,
+      setSearchTermUser,
+      searchTermMachine,
+      setSearchTermMachine,
+      startDate,
+      setStartDate,
+      endDate,
+      setEndDate,
+      totalHours,
+      setTotalHours,
+      totalStandard,
+      setTotalStandard,
+      meta,
+      setMeta,
+      efficiency,
+      setEfficiency,
+    }}>
+      {children}
+    </GlobalContext.Provider>
+  );
 };
 
 export default UserContext;
