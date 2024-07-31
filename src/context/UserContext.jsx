@@ -21,6 +21,8 @@ const UserContext = ({ children }) => {
   const [meta, setMeta] = useState(0);
   const [efficiency, setEfficiency] = useState(0);
   const [totalEfficiency, setTotalEfficiency] = useState(0);
+  const [auth, setAuth] = useState(!!localStorage.getItem('token'));
+  const [role, setRole] = useState(null); // Agrega el estado del rol
 
 
 
@@ -30,7 +32,33 @@ const UserContext = ({ children }) => {
   const rutaLocal = 'http://localhost:3000/api/';
 
   // Loggin *******************************************************************+
+  
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role'); // Asegúrate de que también guardes el rol
 
+    if (token) {
+      setAuth(true);
+      setRole(userRole || ''); // Establece el rol si está disponible
+    }
+  }, []);
+
+  const login = (token, userRole) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', userRole); // Guarda el rol en localStorage
+    setAuth(true);
+    setRole(userRole);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    setAuth(false);
+    setRole('');
+    // Redirige a la página de login
+    window.location.href = '/';
+  };
+  
   // End Loggin ***************************************************************************************
 
   //data machines
@@ -221,6 +249,10 @@ const UserContext = ({ children }) => {
       setMeta,
       efficiency,
       setEfficiency,
+      auth,
+      login,
+      logout,
+      role,
     }}>
       {children}
     </GlobalContext.Provider>
@@ -228,3 +260,4 @@ const UserContext = ({ children }) => {
 };
 
 export default UserContext;
+export const useAuth = () => useContext(GlobalContext)

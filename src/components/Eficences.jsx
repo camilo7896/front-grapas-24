@@ -9,7 +9,7 @@ import CardPicadoComponent from './CardPicadoComponent';
 
 
 export default function Eficences() {
-  const { allRegisterData,searchTermUser, setSearchTermUser,searchTermMachine, setSearchTermMachine,startDate,totalHours, setTotalHours, setStartDate,endDate, setEndDate,totalStandard, setTotalStandard,efficiency, setEfficiency,totalEfficiency, setTotalEfficiency } = useGlobalContext();
+  const { allRegisterData,searchTermUser, setSearchTermUser,searchTermMachine, setSearchTermMachine,startDate,totalHours, setTotalHours, setStartDate,endDate, setEndDate, setTotalStandard, setEfficiency, setTotalEfficiency } = useGlobalContext();
 
 
   const [meta, setMeta] = useState(0);

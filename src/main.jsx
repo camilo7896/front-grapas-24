@@ -4,22 +4,24 @@ import { createBrowserRouter, RouterProvider } from'react-router-dom'
 import HomePage from './pages/HomePage'
 import PicadoPage from './pages/PicadoPage'
 import UserContext from './context/UserContext'
-import Admin from './pages/AdminPage'
+import AdminPage from './pages/AdminPage'
 import TableUser from './components/TableUser'
 import AsignationPage from './pages/AsignationPage'
 import EficencePage from './pages/EficencePage'
-import Login from './components/Login'
+import PrivateRoute from './PrivateRoute'
+import LoginPage from './pages/LoginPage'
+import UnauthorizedPage from './pages/UnauthorizedPage'
 
 const route = createBrowserRouter(
-  [
-    {path: '/',
+  [ {path: '/',
+    element: <LoginPage/>,
+    errorElement: <h1>Error</h1>
+  },
+    {path: '/home',
       element: <HomePage/>,
       errorElement: <h1>Error</h1>
     },
-    {path: '/login',
-      element: <Login/>,
-      errorElement: <h1>Error</h1>
-    },
+  
     {
       path: '/picado',
       element: <PicadoPage/>
@@ -34,19 +36,23 @@ const route = createBrowserRouter(
     },
     {
       path: '/admin',
-      element: <Admin/>
+      element: <PrivateRoute element={<AdminPage/>} allowedRoles={['admin',"superadministrador"]}/>
     },
     {
       path: '/userlist',
       element: <TableUser/>
     },
     {
-      path: '/asignation',
-      element: <AsignationPage/>
-    },
+    path: '/asignation',
+    element: <PrivateRoute element={<AsignationPage />} allowedRoles={['admin', 'superadministrador']} />,
+  },
     {
       path: '/eficences',
       element: <EficencePage/>
+    },
+    {
+      path: '/unauthorized',
+      element: <UnauthorizedPage/>
     }
   ]
 )

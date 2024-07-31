@@ -10,12 +10,16 @@ export default function FormUsers() {
     let nombres = target.nombres.value;
     let apellidos = target.apellidos.value;
     let usuario = target.usuario.value;
+    let password = target.password.value;
+    let rol = target.rol.value;
 
     let createUser = {
       id_usuarios: id_usuarios,
       nombres: nombres,
       apellidos: apellidos,
-      usuario: usuario
+      usuario: usuario,
+      password: password,
+      rol: rol
     };
 
     try {
@@ -53,6 +57,7 @@ export default function FormUsers() {
           placeholder="Codigo"
           name="id_usuarios"
           required
+          autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -60,6 +65,7 @@ export default function FormUsers() {
           placeholder="Nombres"
           name="nombres"
           required
+           autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -67,6 +73,7 @@ export default function FormUsers() {
           placeholder="Apellidos"
           name="apellidos"
           required
+           autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -74,8 +81,28 @@ export default function FormUsers() {
           placeholder="Usuario"
           name="usuario"
           required
+           autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          name="password"
+          required
+           autoComplete="off"
+          className="input input-bordered input-primary w-full max-w-xl m-2"
+        />
+        <select
+          name="rol"
+          required
+           autoComplete="off"
+          className="select select-bordered select-primary w-full max-w-xl m-2"
+        >
+          <option value="">Seleccione un rol</option>
+          <option value="enrolador">superadmin</option>
+          <option value="admin">Admin</option>
+          <option value="enrolador">Enrolador</option>
+        </select>
         <button className="btn btn-info w-full max-w-xl m-2">Enviar</button>
       </form>
     </div>

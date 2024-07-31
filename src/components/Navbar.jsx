@@ -1,17 +1,18 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CogIcon, UserGroupIcon, Cog8ToothIcon } from '@heroicons/react/24/outline';
+import { useGlobalContext } from '../context/UserContext';
 
 export default function Navbar() {
-  const navigate = useNavigate(); // Hook para redirección
+  const {  role } = useGlobalContext();
+  //const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Elimina el token y el rol del almacenamiento local
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+const handleLogout = () => {
+  // Elimina el token del almacenamiento local o cookies
+  localStorage.removeItem('authToken');
+  // Redirige a la página de login
+  window.location.href = '/';
+};
 
-    // Redirige al usuario a la página de login
-    navigate('/login');
-  };
 
   return (
     <div className="navbar bg-neutral text-white">
@@ -35,42 +36,36 @@ export default function Navbar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-neutral rounded-box z-[1] mt-3 w-52 p-2 shadow">
             <li><Link to={'/'}>Home</Link></li>
-            <li>
-              <Link to={'/picado'}>
-                <Cog8ToothIcon className="h-6 w-6 text-blue-500" />
-                Picado
-              </Link>
-            </li>
+           
+            <li><Link to={'/picado'}>
+              <Cog8ToothIcon className="h-6 w-6 text-blue-500" />
+              Picado</Link></li>
+
+
             {/* <li><Link to={'/empaque'}>Empaque</Link></li> */}
-            <li>
-              <Link to={'/admin'}>
-                <CogIcon className="h-6 w-6 text-blue-500" />
-                Administrar
-              </Link>
-            </li>
-            <li>
-              <Link to={'/asignation'}>
+            {role !== 'enrolador' && (
+              <li>
+                <Link to={'/admin'}>
+                  <CogIcon className="h-6 w-6 text-blue-500" />
+                  Administrar
+                </Link>
+              </li>
+
+            )}
+            {role !== 'enrolador' && (
+              <li><Link to={'/asignation'}>
                 <UserGroupIcon className="h-6 w-6 text-blue-500" />
-                Asignaciones
-              </Link>
-            </li>
+                Asignaciones</Link></li>
+            )}
+            
+            <li><button onClick={handleLogout} className="btn btn-primary">Salir</button></li>
           </ul>
         </div>
       </div>
-
-      <div className="flex w-full  justify-between">
-        <div className="navbar-startr">
-          <Link to={"/"} className="btn btn-ghost text-xl">G & P</Link>
-        </div>
-        <div className="navbar-end">
-          <button
-            onClick={handleLogout}
-            className="btn btn-secondary w-64 m-3"
-          >
-            Salir
-          </button>
-        </div>
+      <div className="navbar-center">
+        <Link to={"/home"} className="btn btn-ghost text-xl">G & P</Link>
       </div>
+      <div className="navbar-end"></div>
     </div>
   );
 }
