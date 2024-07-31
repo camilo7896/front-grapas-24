@@ -1,4 +1,5 @@
 import { useGlobalContext } from "../context/UserContext"
+import Navbar from "./Navbar";
 
 export default function TableUser() {
 
@@ -6,7 +7,9 @@ export default function TableUser() {
 
   return (
     <>  
-        <div className="overflow-x-auto">
+    <Navbar/>
+    
+        <div className="overflow-x-auto mt-40">
   <table className="table table-xs table-pin-rows table-pin-cols text-center border border-gray-200 p-4">
     <thead>
       <tr>
