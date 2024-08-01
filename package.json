@@ -17,6 +17,7 @@
     "@remixicon/react": "^4.2.0",
     "@tremor/react": "^3.17.4",
     "moment-timezone": "^0.5.45",
+    "railway": "^2.0.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.1",
