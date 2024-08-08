@@ -1,7 +1,7 @@
 import { useGlobalContext } from "../context/UserContext";
 
 export default function FormUsers() {
-  const { setUser } = useGlobalContext();
+  const { setUser,rutaLocal } = useGlobalContext();
 
   const sendData = async (e) => {
     e.preventDefault();
@@ -21,9 +21,10 @@ export default function FormUsers() {
       password: password,
       rol: rol
     };
+//`${rutaLocal}/machines`
 
     try {
-      const response = await fetch('http://localhost:3000/api/users', {
+      const response = await fetch(`${rutaLocal}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
