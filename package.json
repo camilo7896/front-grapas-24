@@ -16,9 +16,11 @@
     "@heroicons/react": "^2.1.5",
     "@remixicon/react": "^4.2.0",
     "@tremor/react": "^3.17.4",
+    "chart.js": "^4.4.3",
     "moment-timezone": "^0.5.45",
     "railway": "^2.0.17",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.24.1"
