@@ -11,7 +11,6 @@ const AssignationsTable = () => {
   const [users, setUsers] = useState([]);
   const [machines, setMachines] = useState([]);
 
-console.log(allAssignamentData);
 
   // Función para obtener todas las asignaciones
   const fetchAssignations = async () => {
