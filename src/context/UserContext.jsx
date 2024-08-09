@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 
@@ -8,8 +6,6 @@ export const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
 
 const UserContext = ({ children }) => {
-
-
   // *********************** Estados del componente Eficiencia ************************************************************************
 
   const [searchTermUser, setSearchTermUser] = useState('');
@@ -24,15 +20,12 @@ const UserContext = ({ children }) => {
   const [auth, setAuth] = useState(!!localStorage.getItem('token'));
   const [role, setRole] = useState(null); // Agrega el estado del rol
 
-
-
   // ***********************************************************************************************
 
-  //Ruta conexiones
-  const rutaLocal = 'http://192.168.0.19:4000/api';
+  // Ruta conexiones
+  const rutaLocal = process.env.REACT_APP_API_URL || 'http://localhost:4000/api';
 
   // Loggin *******************************************************************+
-  
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('role'); // Asegúrate de que también guardes el rol
@@ -58,10 +51,9 @@ const UserContext = ({ children }) => {
     // Redirige a la página de login
     window.location.href = '/';
   };
-  
   // End Loggin ***************************************************************************************
 
-  //data machines
+  // Data machines
   const [data, setData] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/machines`) 
@@ -69,10 +61,10 @@ const UserContext = ({ children }) => {
       .then(data => {
         setData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Machines: Error fetching data:', error));
   }, []);
 
-  //data users
+  // Data users
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/users/`)
@@ -80,10 +72,10 @@ const UserContext = ({ children }) => {
       .then(data => {
         setUsersData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Users: Error fetching data:', error));
   }, []);
 
-  //data references
+  // Data references
   const [referencesData, setReferencesData] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/reference/`)
@@ -91,10 +83,10 @@ const UserContext = ({ children }) => {
       .then(data => {
         setReferencesData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('References: Error fetching data:', error));
   }, []);
 
-  //Assignament
+  // Assignament
   const [assignamentData, setAssignament] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/assignaments`)
@@ -102,9 +94,10 @@ const UserContext = ({ children }) => {
       .then(data => {
         setAssignament(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Assignaments: Error fetching data:', error));
   }, []);
-  //all assign
+
+  // All assign
   const [allassignamentData, setAllAssignament] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/allassign`)
@@ -115,7 +108,7 @@ const UserContext = ({ children }) => {
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-  // registers
+  // Registers
   const [registerData, setRegisterData] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/user-machines`)
@@ -126,9 +119,7 @@ const UserContext = ({ children }) => {
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-
-
-  //  Metodo para obtener todos los registros enviados
+  // Metodo para obtener todos los registros enviados
   const [allRegisterData, setAllRegisterData] = useState([]);
   useEffect(() => {
     fetch(`${rutaLocal}/horometro-records`)
@@ -138,7 +129,6 @@ const UserContext = ({ children }) => {
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
-
 
   // Estado para crear usuarios
   const [user, setUser] = useState({
@@ -171,8 +161,7 @@ const UserContext = ({ children }) => {
     setIsVisibleReference(!isVisibleReference);
   };
 
-  const [capacity, setCapacity] = useState(0)
-
+  const [capacity, setCapacity] = useState(0);
 
   // Metodo para eliminar una asignacion
   const fetchAssignations = async () => {
@@ -184,19 +173,15 @@ const UserContext = ({ children }) => {
       console.error('Error fetching assignations:', error);
     }
   };
+
   // Efecto para cargar las asignaciones al montar el componente
   useEffect(() => {
     fetchAssignations();
   }, []);
+
   const handleDeleteAssignation = () => {
     console.log('Fetching assignments');
-  }
-
-
-
-
-
-
+  };
 
   return (
     <GlobalContext.Provider value={{
@@ -260,4 +245,4 @@ const UserContext = ({ children }) => {
 };
 
 export default UserContext;
-export const useAuth = () => useContext(GlobalContext)
+export const useAuth = () => useContext(GlobalContext);
