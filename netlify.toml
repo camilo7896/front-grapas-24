@@ -1,5 +1,5 @@
 [build]
-  base = "frontend"  # Directorio base si tu código está en una subcarpeta
+
   command = "npm run build"  # Comando para construir el proyecto
   publish = "./dist"  # Ajusta esto si 'dist' está en la raíz o cambia la ruta según sea necesario
 
