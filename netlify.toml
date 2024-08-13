@@ -1,7 +1,7 @@
 [build]
-  base = "frontend"  # Ajusta esto si tu código está en una subcarpeta
-  command = "npm run build"
-  publish = "frontend/dist"  # Ajusta esto al directorio de salida de tu build
+  base = "frontend"  # Establece la carpeta base donde se encuentra tu código fuente
+  command = "npm run build"  # Comando para construir el proyecto
+  publish = "FronEnd\dist"  # Directorio de salida de tu build
 
 [[redirects]]
   from = "/api/*"
