@@ -8,7 +8,7 @@
 
 Aquí tienes un video que muestra una descripción general y el funcionamiento de la aplicación:
 
-[![Video Demostrativo](FronEnd\src\videos\productrack.mp4)](FronEnd\src\videos\productrack.mp4)
+[![Video Demostrativo](.\src\videos\productrack.mp4)](.\src\videos\productrack.mp4)
 
 ## Tecnologías Utilizadas
 
