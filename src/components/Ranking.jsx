@@ -1,44 +1,76 @@
 import { useState, useEffect } from 'react';
 import { useGlobalContext } from "../context/UserContext";
-import rankingImage from '../images/ranking.png'; // Ajusta la ruta según la ubicación
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import goldMedalImage from '../images/caballo_oro.png';
+import silverMedalImage from '../images/caballlo_plata.png';
+import bronzeMedalImage from '../images/bronce.jpeg';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Ranking() {
-  const { allRegisterData, searchTermUser, searchTermMachine, startDate, endDate, setEfficiency } = useGlobalContext();
+  const { allRegisterData, searchTermUser, searchTermMachine, setEfficiency } = useGlobalContext();
   const [topThree, setTopThree] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [monthFilter, setMonthFilter] = useState('');
+  const [yearFilter, setYearFilter] = useState('');
 
+  // Funciones de formato y parseo de fechas
   const formatDate = (dateStr) => {
+    if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
     return `${day}/${month}/${year}`;
   };
 
   const parseDate = (dateStr) => {
+    if (!dateStr) return new Date();
     const [day, month, year] = dateStr.split('/');
     return new Date(`${year}-${month}-${day}`);
   };
 
-  const filteredData = allRegisterData.filter(user => {
-    if (!user) return false;
-    const searchLowerUser = searchTermUser.toLowerCase();
-    const searchLowerMachine = searchTermMachine.toLowerCase();
-    const recordDate = formatDate(user.registro_maquina);
+  // Función para obtener el primer y último día del mes
+  const getMonthRange = (month) => {
+    const [year, monthStr] = month.split('-');
+    const firstDay = new Date(year, monthStr - 1, 1);
+    const lastDay = new Date(year, monthStr, 0);
+    return { firstDay, lastDay };
+  };
 
-    const withinDateRange = (!startDate || parseDate(recordDate) >= parseDate(startDate)) &&
-                            (!endDate || parseDate(recordDate) <= parseDate(endDate));
+  // Función para obtener el primer y último día del año
+  const getYearRange = (year) => {
+    const firstDay = new Date(year, 0, 1);
+    const lastDay = new Date(year, 11, 31);
+    return { firstDay, lastDay };
+  };
 
-    return (
-      withinDateRange &&
-      (user.id_usuarioRegistrador?.toString() || '').toLowerCase().includes(searchLowerUser) &&
-      (user.id_asignacion?.toString() || '').toLowerCase().includes(searchLowerMachine)
-    );
-  });
+  // Filtrado de datos usando useMemo para evitar cálculos innecesarios
+  useEffect(() => {
+    const { firstDay, lastDay } = monthFilter
+      ? getMonthRange(monthFilter)
+      : yearFilter
+      ? getYearRange(yearFilter)
+      : { firstDay: new Date(0), lastDay: new Date() };
+
+    const filtered = allRegisterData.filter(user => {
+      if (!user) return false;
+      const searchLowerUser = searchTermUser.toLowerCase();
+      const searchLowerMachine = searchTermMachine.toLowerCase();
+      const recordDate = formatDate(user.registro_maquina);
+
+      const withinDateRange = (!parseDate(recordDate) || parseDate(recordDate) >= firstDay) &&
+        (!parseDate(recordDate) || parseDate(recordDate) <= lastDay);
+
+      return (
+        withinDateRange &&
+        (user.id_usuarioRegistrador?.toString() || '').toLowerCase().includes(searchLowerUser) &&
+        (user.id_asignacion?.toString() || '').toLowerCase().includes(searchLowerMachine)
+      );
+    });
+    setFilteredData(filtered);
+  }, [allRegisterData, searchTermUser, searchTermMachine, monthFilter, yearFilter]);
 
   useEffect(() => {
-    let totalHours = 0;
-    let totalStandard = 0;
-    let totalEfficiency = 0;
-
-    // Calculate efficiencies and rank
-    const efficiencyData = filteredData.map(user => {
+    const groupedData = filteredData.reduce((acc, user) => {
       const initialHours = user.horometro_inicial || 0;
       const finalHours = user.horometro_final || 0;
       const hoursWorked = finalHours - initialHours;
@@ -47,47 +79,120 @@ export default function Ranking() {
       const registroStandDecimal = registroStand / 100;
       const efficiencyValue = (hoursWorked - (registroStandDecimal * horasAsignadas)).toFixed(2);
 
-      totalHours += hoursWorked;
-      totalStandard += registroStand;
-      totalEfficiency += parseFloat(efficiencyValue);
+      if (!acc[user.id_usuarioRegistrador]) {
+        acc[user.id_usuarioRegistrador] = { totalHours: 0, totalStandard: 0, totalEfficiency: 0, id_usuarioRegistrador: user.id_usuarioRegistrador };
+      }
 
-      return { ...user, efficiencyValue: parseFloat(efficiencyValue) };
-    });
+      acc[user.id_usuarioRegistrador].totalHours += hoursWorked;
+      acc[user.id_usuarioRegistrador].totalStandard += registroStand;
+      acc[user.id_usuarioRegistrador].totalEfficiency += parseFloat(efficiencyValue);
 
-    // Debug: Check filtered data and efficiency calculation
-    console.log('Filtered Data:', filteredData);
-    console.log('Efficiency Data:', efficiencyData);
+      return acc;
+    }, {});
 
-    // Sort data by efficiency (lowest to highest)
-    const sortedData = efficiencyData.sort((a, b) => a.efficiencyValue - b.efficiencyValue);
+    const efficiencyData = Object.values(groupedData);
+
+    // Ordenar los datos por eficiencia total (más cercano a 0)
+    const sortedData = efficiencyData.sort((a, b) => Math.abs(a.totalEfficiency) - Math.abs(b.totalEfficiency));
     setTopThree(sortedData.slice(0, 3));
 
-    const efficiencyValue = totalStandard > 0 ? (totalHours / (totalStandard / 100)) * 100 : 0;
-    setEfficiency(efficiencyValue.toFixed(2));
-  }, [filteredData]);
+    // Calcular la eficiencia global
+    const totalHours = efficiencyData.reduce((acc, item) => acc + item.totalHours, 0);
+    const totalStandard = efficiencyData.reduce((acc, item) => acc + item.totalStandard, 0);
+    const overallEfficiency = totalStandard > 0 ? (totalHours / (totalStandard / 100)) * 100 : 0;
+    setEfficiency(overallEfficiency.toFixed(2));
+  }, [filteredData, setEfficiency]);
 
-  // Debug: Check top three data before rendering
-  console.log('Top Three:', topThree);
+  // Datos para la gráfica
+  const chartData = {
+    labels: topThree.map(item => `Código: ${item.id_usuarioRegistrador}`),
+    datasets: [{
+      label: 'Eficiencia (%)',
+      data: topThree.map(item => item.totalEfficiency.toFixed(2)),
+      backgroundColor: topThree.map((_, index) => index === 0 ? 'rgba(119, 215, 0, 0.8)' : index === 1 ? 'rgba(205, 127, 50, 0.2)' : 'rgba(205, 127, 50, 0.2)'),
+      borderColor: topThree.map((_, index) => index === 0 ? 'rgba(255, 215, 0, 1)' : index === 1 ? 'rgba(192, 192, 192, 1)' : 'rgba(205, 127, 50, 1)'),
+      borderWidth: 1
+    }]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `Eficiencia: ${tooltipItem.raw}%`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function (value) {
+            return `${value}%`;
+          }
+        }
+      }
+    }
+  };
 
   return (
     <>
-      <div className="m-8 w-full">
-        <h3 className="font-semibold text-lg text-center m-5">Top 3 Operarios Picado</h3>
+      <div className="bg-slate-700 text-white rounded-xl p-3">
+        <h2 className='font-semibold text-3xl text-center'>Picado</h2>
+        <h3 className="font-semibold text-lg text-center m-5">Trabajadores del mes</h3>
+
+        {/* Filtros de fecha y hora */}
+        <div className="flex justify-center text-black flex-wrap">
+          <input
+            type="month"
+            value={monthFilter}
+            onChange={(e) => {
+              setMonthFilter(e.target.value);
+              setYearFilter(''); // Limpiar el filtro de año si se aplica el filtro de mes
+            }}
+            className="p-2 rounded-md border border-gray-300 m-2"
+          />
+          <input
+            type="number"
+            placeholder="Ingresa el año"
+            value={yearFilter}
+            onChange={(e) => {
+              setYearFilter(e.target.value);
+              setMonthFilter(''); // Limpiar el filtro de mes si se aplica el filtro de año
+            }}
+            className="p-2 rounded-md border border-gray-300 m-2"
+          />
+        </div>
+
         <div className="flex justify-around flex-wrap mt-4">
           {topThree.map((item, index) => (
-            <div key={item.id} className={`m-4 p-4 border rounded-lg ${index > 0 ? 'bg-yellow-200' : index === 1 ? 'bg-silver-200' : 'bg-bronze-200'} flex items-center space-x-4`}>
+            <div key={item.id_usuarioRegistrador} className={`m-4 p-4 border rounded-lg ${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-silver-200' : 'bg-bronze-200'} flex items-center space-x-4`}>
               <img
-                src={rankingImage} // Asegúrate de que la ruta sea correcta
-                alt={`Profile of ${item.id_usuarioRegistrador}`}
-                className="w-16 h-16 rounded-full p-2"
+                src={index === 0 ? goldMedalImage : index === 1 ? silverMedalImage : bronzeMedalImage} // Imágenes de medallas
+                alt={`Medalla ${index + 1}`}
+                className="w-16 h-16 rounded-full p-2 border border-l-cyan-50"
               />
               <div>
-                <p className="font-bold">{index - 3}° Puesto</p>
+                <p className="font-bold">{index + 1}° Puesto</p>
                 <p>Codigo: {item.id_usuarioRegistrador}</p>
-                <p className='font-semibold'>Eficiencia: {item.efficiencyValue.toFixed(2)}</p>
+                <p className='font-semibold'>Eficiencia: {item.totalEfficiency.toFixed(2)} %</p>
               </div>
             </div>
           ))}
+        </div>
+        <div className='flex justify-center'>
+          <div className="m-4 md:m-8 bg-white p-4 md:p-10 rounded-3xl w-full max-w-4xl">
+            <h3 className="font-semibold text-lg text-center mb-4">Eficiencia de los Top 3</h3>
+            <div className="relative h-64 md:h-80">
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          </div>
         </div>
       </div>
     </>
