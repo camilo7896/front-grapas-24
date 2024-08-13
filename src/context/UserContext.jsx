@@ -29,7 +29,7 @@ const UserContext = ({ children }) => {
   // ***********************************************************************************************
 
   //Ruta conexiones
-  const rutaLocal = 'http://localhost:3000/api/';
+  const rutaLocal = 'http://192.168.0.19:3000/api/';
 
   // Loggin *******************************************************************+
   
@@ -64,7 +64,7 @@ const UserContext = ({ children }) => {
   //data machines
   const [data, setData] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/machines/')
+    fetch('http://192.168.0.19:3000/api/machines/')
       .then(response => response.json())
       .then(data => {
         setData(data);
@@ -75,7 +75,7 @@ const UserContext = ({ children }) => {
   //data users
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/users/')
+    fetch('http://192.168.0.19:3000/api/users/')
       .then(response => response.json())
       .then(data => {
         setUsersData(data);
@@ -86,7 +86,7 @@ const UserContext = ({ children }) => {
   //data references
   const [referencesData, setReferencesData] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/reference/')
+    fetch('http://192.168.0.19:3000/api/reference/')
       .then(response => response.json())
       .then(data => {
         setReferencesData(data);
@@ -97,7 +97,7 @@ const UserContext = ({ children }) => {
   //Assignament
   const [assignamentData, setAssignament] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/assignaments/')
+    fetch('http://192.168.0.19:3000/api/assignaments/')
       .then(response => response.json())
       .then(data => {
         setAssignament(data);
@@ -107,7 +107,7 @@ const UserContext = ({ children }) => {
   //all assign
   const [allassignamentData, setAllAssignament] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/allassign/')
+    fetch('http://192.168.0.19:3000/api/allassign/')
       .then(response => response.json())
       .then(data => {
         setAllAssignament(data);
@@ -118,7 +118,7 @@ const UserContext = ({ children }) => {
   // registers
   const [registerData, setRegisterData] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/user-machines/')
+    fetch('http://192.168.0.19:3000/api/user-machines/')
       .then(response => response.json())
       .then(data => {
         setRegisterData(data);
@@ -131,7 +131,7 @@ const UserContext = ({ children }) => {
   //  Metodo para obtener todos los registros enviados
   const [allRegisterData, setAllRegisterData] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:3000/api/horometro-records')
+    fetch('http://192.168.0.19:3000/api/horometro-records')
       .then(response => response.json())
       .then(data => {
         setAllRegisterData(data);
@@ -177,7 +177,7 @@ const UserContext = ({ children }) => {
   // Metodo para eliminar una asignacion
   const fetchAssignations = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/allassign');
+      const response = await fetch('http://192.168.0.19:3000/api/allassign');
       const data = await response.json();
       setAllAssignament(data);
     } catch (error) {
