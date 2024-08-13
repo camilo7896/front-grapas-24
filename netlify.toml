@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:8444"
+  status = 200
+  force = true
