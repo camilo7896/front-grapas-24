@@ -1,3 +1,8 @@
+[build]
+  base = "frontend"  # Ajusta esto si tu código está en una subcarpeta
+  command = "npm run build"
+  publish = "frontend/dist"  # Ajusta esto al directorio de salida de tu build
+
 [[redirects]]
   from = "/api/*"
   to = "http://localhost:8444"
