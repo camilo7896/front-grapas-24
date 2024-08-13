@@ -1,7 +1,7 @@
 [build]
-  base = "frontend"  # Establece la carpeta base donde se encuentra tu código fuente
+  base = "frontend"  # Directorio base donde se encuentra tu código fuente
   command = "npm run build"  # Comando para construir el proyecto
-  publish = "FronEnd\dist"  # Directorio de salida de tu build
+  publish = "frontend/dist"  # Directorio de salida de tu build
 
 [[redirects]]
   from = "/api/*"
