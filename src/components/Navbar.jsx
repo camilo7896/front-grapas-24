@@ -63,7 +63,7 @@ const handleLogout = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <Link to={"/home"} className="btn btn-ghost text-xl">G & P</Link>
+        <Link to={"/home"} className="btn btn-ghost text-xl">ProductTrack</Link>
       </div>
       <div className="navbar-end"></div>
     </div>
