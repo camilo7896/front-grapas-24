@@ -30,6 +30,8 @@ const UserContext = ({ children }) => {
 
   //Ruta conexiones
   const rutaLocal = 'http://192.168.0.19:3000/api/';
+   // const rutaLocal = 'http://localhost:3000/api/';
+
 
   // Loggin *******************************************************************+
   
@@ -193,10 +195,51 @@ const UserContext = ({ children }) => {
   }
 
 
+  // Función para actualizar el usuario
+  const updateUser = async (user) => {
+    try {
+      const response = await fetch(`http://192.168.0.19:3000/api/users/${user.id_usuarios}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al actualizar usuario: ${errorText}`);
+      }
+
+      // Actualizar el estado con el usuario actualizado
+      setUsersData(usersData.map(u => u.id_usuarios === user.id_usuarios ? user : u));
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+      throw error;
+    }
+  };
 
 
-
-
+  const deleteUser = async (userId) => {
+    try {
+      const response = await fetch(`http://192.168.0.19:3000/api/users/${userId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        // Manejo de errores, por ejemplo, si el servidor devuelve un código de estado 404 o 500
+        const errorText = await response.text();
+        throw new Error(`Error al eliminar usuario: ${errorText}`);
+      }
+  
+      // Actualizar el estado después de una eliminación exitosa
+      setUsersData(usersData.filter(user => user.id_usuarios !== userId));
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      throw error;
+    }
+  };
+  
 
   return (
     <GlobalContext.Provider value={{
@@ -253,6 +296,8 @@ const UserContext = ({ children }) => {
       login,
       logout,
       role,
+      updateUser,
+      deleteUser
     }}>
       {children}
     </GlobalContext.Provider>
