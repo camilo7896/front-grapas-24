@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useGlobalContext } from "../context/UserContext";
 
 export default function Login() {
-  const { login } = useGlobalContext();
+  const { login,rutaLocal } = useGlobalContext();
   const [password, setPasswords] = useState('');
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
@@ -13,6 +13,7 @@ export default function Login() {
 
     try {
       const response = await fetch('http://192.168.0.19:3000/api/login', { // Ajusta la URL si es necesario
+      const response = await fetch(`${rutaLocal}/login`, { // Ajusta la URL si es necesario
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

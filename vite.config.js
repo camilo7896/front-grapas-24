@@ -7,4 +7,8 @@ export default defineConfig({
     port: 3001, // Cambia el puerto aquí
   },
   plugins: [react()],
+  // server: {
+  //   host: '0.0.0.0',  // Permitir conexiones desde todas las interfaces de red
+  // //  port: 5000,       // Puedes cambiar el puerto si es necesario
+  // },
 })

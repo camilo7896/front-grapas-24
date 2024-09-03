@@ -1,7 +1,7 @@
 import { useGlobalContext } from "../context/UserContext";
 
 export default function FormReference() {
-  const { setReferencesData } = useGlobalContext();
+  const { setReferencesData,rutaLocal } = useGlobalContext();
 
   const sendData = async (e) => {
     e.preventDefault();
@@ -15,9 +15,9 @@ export default function FormReference() {
       nombre_referencia: nombre_referencia,
       codigo_referencia: codigo_referencia,
     };
-
     try {
       const response = await fetch('http://192.168.0.19:3000/api/reference', {
+      const response = await fetch(`${rutaLocal}/reference`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

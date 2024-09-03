@@ -5,6 +5,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import goldMedalImage from '../images/caballo_oro.png';
 import silverMedalImage from '../images/caballlo_plata.png';
 import bronzeMedalImage from '../images/bronce.jpeg';
+import goldMedalImage from '../images-icons/caballo_oro.png';
+import silverMedalImage from '../images-icons/caballlo_plata.png';
+import bronzeMedalImage from '../images-icons/bronce.jpeg';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

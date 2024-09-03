@@ -24,13 +24,15 @@ const UserContext = ({ children }) => {
   const [auth, setAuth] = useState(!!localStorage.getItem('token'));
   const [role, setRole] = useState(null); // Agrega el estado del rol
 
-
-
   // ***********************************************************************************************
 
   //Ruta conexiones
   const rutaLocal = 'http://192.168.0.19:3000/api/';
    // const rutaLocal = 'http://localhost:3000/api/';
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const rutaLocal = apiUrl || 'http://192.168.0.19:4000/api';
+
 
 
   // Loggin *******************************************************************+
@@ -67,49 +69,55 @@ const UserContext = ({ children }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/machines/')
+    fetch(`${rutaLocal}/machines`) 
       .then(response => response.json())
       .then(data => {
         setData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Machines:  Error fetching data:', error));
   }, []);
 
   //data users
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/users/')
+    fetch(`${rutaLocal}/users/`)
       .then(response => response.json())
       .then(data => {
         setUsersData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Users: Error fetching data:', error));
   }, []);
 
   //data references
   const [referencesData, setReferencesData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/reference/')
+    fetch(`${rutaLocal}/reference/`)
       .then(response => response.json())
       .then(data => {
         setReferencesData(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('References: Error fetching data:', error));
   }, []);
 
   //Assignament
   const [assignamentData, setAssignament] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/assignaments/')
+
+    fetch(`${rutaLocal}/assignaments`)
       .then(response => response.json())
       .then(data => {
         setAssignament(data);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Asignnaments: Error fetching data:', error));
   }, []);
   //all assign
   const [allassignamentData, setAllAssignament] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/allassign/')
+    fetch(`${rutaLocal}/allassign`)
       .then(response => response.json())
       .then(data => {
         setAllAssignament(data);
@@ -121,6 +129,8 @@ const UserContext = ({ children }) => {
   const [registerData, setRegisterData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/user-machines/')
+
+    fetch(`${rutaLocal}/user-machines`)
       .then(response => response.json())
       .then(data => {
         setRegisterData(data);
@@ -134,6 +144,7 @@ const UserContext = ({ children }) => {
   const [allRegisterData, setAllRegisterData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/horometro-records')
+    fetch(`${rutaLocal}/horometro-records`)
       .then(response => response.json())
       .then(data => {
         setAllRegisterData(data);
@@ -180,6 +191,7 @@ const UserContext = ({ children }) => {
   const fetchAssignations = async () => {
     try {
       const response = await fetch('http://192.168.0.19:3000/api/allassign');
+      const response = await fetch(`${rutaLocal}/allassign`);
       const data = await response.json();
       setAllAssignament(data);
     } catch (error) {

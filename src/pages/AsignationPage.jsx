@@ -5,7 +5,7 @@ import CapacityPanel from '../components/CapacityPanel';
 import AssignationsTable from '../components/AssignationsTable ';
 
 const AsignationPage = () => {
-  const { data: machinesData, usersData, referencesData, setAssignament, capacity, setCapacity } = useGlobalContext();
+  const { data: machinesData, usersData, referencesData, setAssignament, capacity, setCapacity,rutaLocal } = useGlobalContext();
   const [searchId, setSearchId] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [machines, setMachines] = useState(Array(5).fill(''));
@@ -91,9 +91,10 @@ const AsignationPage = () => {
       horas_asignadas: times[machineIndex] || null,
       id_standar: standards[machineIndex] || null
     })).filter(asignacion => asignacion.id_maquinaAsignada);
-  
+  `${rutaLocal}/login`
     try {
       const response = await fetch('http://192.168.0.19:3000/api/assignations/multiple', {
+      const response = await fetch(`${rutaLocal}/assignations/multiple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
