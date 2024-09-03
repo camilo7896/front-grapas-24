@@ -16,6 +16,7 @@ export default function FormReference() {
       codigo_referencia: codigo_referencia,
     };
     try {
+      const response = await fetch('http://192.168.0.19:3000/api/reference', {
       const response = await fetch(`${rutaLocal}/reference`, {
         method: 'POST',
         headers: {

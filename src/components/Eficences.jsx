@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from "../context/UserContext";
-import { Card} from '@tremor/react';
-
+import { Card } from '@tremor/react';
 import { RiRefreshLine } from '@remixicon/react';
 import { Button } from '@tremor/react';
 import CardPicadoComponent from './CardPicadoComponent';
 
-
 export default function Eficences() {
-  const { allRegisterData,searchTermUser, setSearchTermUser,searchTermMachine, setSearchTermMachine,startDate,totalHours, setTotalHours, setStartDate,endDate, setEndDate, setTotalStandard, setEfficiency, setTotalEfficiency } = useGlobalContext();
-
+  const { allRegisterData, searchTermUser, setSearchTermUser, searchTermMachine, setSearchTermMachine, startDate, totalHours, setTotalHours, setStartDate, endDate, setEndDate, setTotalStandard, setEfficiency, setTotalEfficiency } = useGlobalContext();
 
   const [meta, setMeta] = useState(0);
 
@@ -27,11 +24,6 @@ export default function Eficences() {
 
   const formatDate = (dateStr) => {
     const [year, month, day] = dateStr.split('-');
-    return `${day}/${month}/${year}`;
-  };
-
-  const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('/');
     return new Date(`${year}-${month}-${day}`);
   };
 
@@ -41,15 +33,15 @@ export default function Eficences() {
     const searchLowerMachine = searchTermMachine.toLowerCase();
     const recordDate = formatDate(user.registro_maquina);
 
-    const withinDateRange = (!startDate || parseDate(recordDate) >= parseDate(startDate)) &&
-                            (!endDate || parseDate(recordDate) <= parseDate(endDate));
+    const withinDateRange = (!startDate || formatDate(startDate) <= recordDate) &&
+                            (!endDate || recordDate <= formatDate(endDate));
 
     return (
       withinDateRange &&
       (user.id_usuarioRegistrador?.toString() || '').toLowerCase().includes(searchLowerUser) &&
       (user.id_asignacion?.toString() || '').toLowerCase().includes(searchLowerMachine)
     );
-  });
+  }).sort((a, b) => formatDate(b.registro_maquina) - formatDate(a.registro_maquina)); // Sort by date descending
 
   const handleGoBack = () => navigate(-1);
 
@@ -83,15 +75,11 @@ export default function Eficences() {
     const efficiencyValue = totalStandard > 0 ? (totalHours / (totalStandard / 100)) * 100 : 0;
     setEfficiency(efficiencyValue.toFixed(2));
 
-
   }, [filteredData]);
-
-
-
 
   return (
     <>
-      <Button  className="m-5" onClick={handleGoBack} icon={RiRefreshLine}>Volver</Button>
+      <Button className="m-5" onClick={handleGoBack} icon={RiRefreshLine}>Volver</Button>
 
       <div className='flex justify-around flex-wrap'>
         <div>
@@ -103,7 +91,7 @@ export default function Eficences() {
           </Card>
         </div>
 
-        <div className="mx-auto max-w-full mt-4 ">
+        <div className="mx-auto max-w-full mt-4">
           <div className="flex flex-col mb-4 space-y-4">
             <div className='flex justify-center'>
               <input
@@ -125,13 +113,13 @@ export default function Eficences() {
               <div className="flex space-x-4 mt-4">
                 <input
                   type="date"
-                  value={startDate ? startDate.split('/').reverse().join('-') : ''}
+                  value={startDate ? startDate.split('-').reverse().join('-') : ''}
                   onChange={handleStartDateChange}
                   className="input input-bordered w-full max-w-xs"
                 />
                 <input
                   type="date"
-                  value={endDate ? endDate.split('/').reverse().join('-') : ''}
+                  value={endDate ? endDate.split('-').reverse().join('-') : ''}
                   onChange={handleEndDateChange}
                   className="input input-bordered w-full max-w-xs"
                 />
@@ -176,7 +164,7 @@ export default function Eficences() {
 
                     return (
                       <tr key={index}>
-                        <td>{user.registro_maquina}</td>
+                        <td>{formatDate(user.registro_maquina).toLocaleDateString()}</td>
                         <td>{user.id_usuarioRegistrador}</td>
                         <td>{user.id_asignacion}</td>
                         <td>{user.registro_referencia}</td>
@@ -200,8 +188,6 @@ export default function Eficences() {
           </div>
         </div>
       </div>
-
-     
     </>
   );
 }

@@ -27,6 +27,8 @@ const UserContext = ({ children }) => {
   // ***********************************************************************************************
 
   //Ruta conexiones
+  const rutaLocal = 'http://192.168.0.19:3000/api/';
+   // const rutaLocal = 'http://localhost:3000/api/';
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const rutaLocal = apiUrl || 'http://192.168.0.19:4000/api';
@@ -66,6 +68,7 @@ const UserContext = ({ children }) => {
   //data machines
   const [data, setData] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/machines/')
     fetch(`${rutaLocal}/machines`) 
       .then(response => response.json())
       .then(data => {
@@ -77,6 +80,7 @@ const UserContext = ({ children }) => {
   //data users
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/users/')
     fetch(`${rutaLocal}/users/`)
       .then(response => response.json())
       .then(data => {
@@ -88,6 +92,7 @@ const UserContext = ({ children }) => {
   //data references
   const [referencesData, setReferencesData] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/reference/')
     fetch(`${rutaLocal}/reference/`)
       .then(response => response.json())
       .then(data => {
@@ -99,6 +104,8 @@ const UserContext = ({ children }) => {
   //Assignament
   const [assignamentData, setAssignament] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/assignaments/')
+
     fetch(`${rutaLocal}/assignaments`)
       .then(response => response.json())
       .then(data => {
@@ -109,6 +116,7 @@ const UserContext = ({ children }) => {
   //all assign
   const [allassignamentData, setAllAssignament] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/allassign/')
     fetch(`${rutaLocal}/allassign`)
       .then(response => response.json())
       .then(data => {
@@ -120,6 +128,8 @@ const UserContext = ({ children }) => {
   // registers
   const [registerData, setRegisterData] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/user-machines/')
+
     fetch(`${rutaLocal}/user-machines`)
       .then(response => response.json())
       .then(data => {
@@ -133,6 +143,7 @@ const UserContext = ({ children }) => {
   //  Metodo para obtener todos los registros enviados
   const [allRegisterData, setAllRegisterData] = useState([]);
   useEffect(() => {
+    fetch('http://192.168.0.19:3000/api/horometro-records')
     fetch(`${rutaLocal}/horometro-records`)
       .then(response => response.json())
       .then(data => {
@@ -179,6 +190,7 @@ const UserContext = ({ children }) => {
   // Metodo para eliminar una asignacion
   const fetchAssignations = async () => {
     try {
+      const response = await fetch('http://192.168.0.19:3000/api/allassign');
       const response = await fetch(`${rutaLocal}/allassign`);
       const data = await response.json();
       setAllAssignament(data);
@@ -195,10 +207,51 @@ const UserContext = ({ children }) => {
   }
 
 
+  // Función para actualizar el usuario
+  const updateUser = async (user) => {
+    try {
+      const response = await fetch(`http://192.168.0.19:3000/api/users/${user.id_usuarios}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al actualizar usuario: ${errorText}`);
+      }
+
+      // Actualizar el estado con el usuario actualizado
+      setUsersData(usersData.map(u => u.id_usuarios === user.id_usuarios ? user : u));
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+      throw error;
+    }
+  };
 
 
-
-
+  const deleteUser = async (userId) => {
+    try {
+      const response = await fetch(`http://192.168.0.19:3000/api/users/${userId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        // Manejo de errores, por ejemplo, si el servidor devuelve un código de estado 404 o 500
+        const errorText = await response.text();
+        throw new Error(`Error al eliminar usuario: ${errorText}`);
+      }
+  
+      // Actualizar el estado después de una eliminación exitosa
+      setUsersData(usersData.filter(user => user.id_usuarios !== userId));
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      throw error;
+    }
+  };
+  
 
   return (
     <GlobalContext.Provider value={{
@@ -255,6 +308,8 @@ const UserContext = ({ children }) => {
       login,
       logout,
       role,
+      updateUser,
+      deleteUser
     }}>
       {children}
     </GlobalContext.Provider>

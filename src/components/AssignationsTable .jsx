@@ -12,6 +12,7 @@ const AssignationsTable = () => {
   const [machines, setMachines] = useState([]);
 
 
+
   // Función para obtener todas las asignaciones
   const fetchAssignations = async () => {
     try {
@@ -65,7 +66,7 @@ const AssignationsTable = () => {
   const handleEditAssignation = (assignation) => {
     setCurrentAssignation(assignation);
     setIsModalOpen(true);
-  
+
   };
 
   // Función para cerrar el modal
@@ -76,6 +77,7 @@ const AssignationsTable = () => {
 
   // Función para actualizar una asignación por su ID
   const handleUpdateAssignation = async () => {
+    console.log('Updating assignation:', currentAssignation);  // Agrega un log para depuración
     try {
       const response = await fetch(`${rutaLocal}allassign/${currentAssignation.id}`, {
         method: 'PATCH',
@@ -85,7 +87,6 @@ const AssignationsTable = () => {
         body: JSON.stringify(currentAssignation)
       });
       if (response.ok) {
-        // Actualizar la lista de asignaciones después de actualizar
         fetchAssignations();
         handleCloseModal();
       } else {
@@ -95,12 +96,15 @@ const AssignationsTable = () => {
       console.error('Error updating assignation:', error);
     }
   };
+  
 
   // Manejar el cambio de los campos de entrada del modal
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Updating ${name} to ${value}`);  // Agrega un log para depuración
     setCurrentAssignation((prev) => ({ ...prev, [name]: value }));
   };
+  
 
   return (
     <>
@@ -159,13 +163,13 @@ const AssignationsTable = () => {
 
               <select
                 name="nombre_usuario"
-                value={currentAssignation.nombre_usuario}
+                value={currentAssignation.id_usuarios}
                 onChange={handleInputChange}
                 className="select select-bordered w-full mb-2"
               >
                 {users.map((user) => (
-                  <option key={user.id} value={user.nombre_usuario}>
-                    {user.nombre_usuario}
+                  <option key={user.id} value={user.id_usuarios}>
+                    {user.id_usuarios}
                   </option>
                 ))}
               </select>
@@ -177,12 +181,12 @@ const AssignationsTable = () => {
                 className="select select-bordered w-full mb-2"
               >
                 {machines.map((machine) => (
-                  <option key={machine.id} value={machine.nombre}>
-                    {machine.nombre}
+                  <option key={machine.id} value={machine.maquina}>
+                    {machine.maquina}
                   </option>
                 ))}
               </select>
-              
+
               <input
                 type="text"
                 name="nombre_referencia"

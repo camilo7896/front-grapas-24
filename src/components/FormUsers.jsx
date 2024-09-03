@@ -24,7 +24,10 @@ export default function FormUsers() {
 //`${rutaLocal}/machines`
 
     try {
+      const response = await fetch('http://192.168.0.19:3000/api/users', {
+
       const response = await fetch(`${rutaLocal}/users`, {
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -101,8 +104,8 @@ export default function FormUsers() {
         >
           <option value="">Seleccione un rol</option>
           <option value="enrolador">superadmin</option>
-          <option value="admin">Admin</option>
-          <option value="enrolador">Enrolador</option>
+          <option value="admin">admin</option>
+          <option value="enrolador">enrolador</option>
         </select>
         <button className="btn btn-info w-full max-w-xl m-2">Enviar</button>
       </form>

@@ -79,6 +79,7 @@ const UserMachines = () => {
                 alert("Horómetros guardados exitosamente");
                 handleModalClose();
             } else {
+                alert("¡Tu asignacion esta incompleta. Consulta con el supervisor!");
                 console.error('Error saving horómetros');
             }
         } catch (error) {
