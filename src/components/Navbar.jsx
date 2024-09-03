@@ -39,7 +39,7 @@ const handleLogout = () => {
            
             <li><Link to={'/picado'}>
               <Cog8ToothIcon className="h-6 w-6 text-blue-500" />
-              Picado</Link></li>
+              Operarios</Link></li>
 
 
             {/* <li><Link to={'/empaque'}>Empaque</Link></li> */}
@@ -47,7 +47,7 @@ const handleLogout = () => {
               <li>
                 <Link to={'/admin'}>
                   <CogIcon className="h-6 w-6 text-blue-500" />
-                  Administrar
+                  Administrador
                 </Link>
               </li>
 
@@ -55,7 +55,7 @@ const handleLogout = () => {
             {role !== 'enrolador' && (
               <li><Link to={'/asignation'}>
                 <UserGroupIcon className="h-6 w-6 text-blue-500" />
-                Asignaciones</Link></li>
+                Supervisor</Link></li>
             )}
             
             <li><button onClick={handleLogout} className="btn btn-primary">Salir</button></li>
