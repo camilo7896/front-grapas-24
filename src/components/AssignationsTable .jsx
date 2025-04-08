@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import 'daisyui/dist/full.css'; // Asegúrate de importar los estilos de DaisyUI
+import 'daisyui/dist/full.css';
 import { useGlobalContext } from '../context/UserContext';
 
 const AssignationsTable = () => {
-  const { rutaLocal } = useGlobalContext();
+  const { rutaLocal, fetchAllAssignations, machinesData } = useGlobalContext();
 
   const [allAssignamentData, setAllAssignament] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,27 +11,31 @@ const AssignationsTable = () => {
   const [users, setUsers] = useState([]);
   const [machines, setMachines] = useState([]);
 
-
-
-  // Función para obtener todas las asignaciones
   const fetchAssignations = async () => {
     try {
-      const response = await fetch(`${rutaLocal}allassign`);
+      const response = await fetch(`${rutaLocal}/allassign`);
       const data = await response.json();
       setAllAssignament(data);
+      console.log(data);
     } catch (error) {
       console.error('Error fetching assignations:', error);
     }
   };
 
-  // Función para obtener usuarios y máquinas para los selects
+  <p className="text-sm text-gray-600">
+    Total de Máquinas Asignadas: {allAssignamentData.length}
+  </p>
+
+
+
+
   const fetchUsersAndMachines = async () => {
     try {
-      const usersResponse = await fetch(`${rutaLocal}users`);
+      const usersResponse = await fetch(`${rutaLocal}/users`);
       const usersData = await usersResponse.json();
       setUsers(usersData);
 
-      const machinesResponse = await fetch(`${rutaLocal}machines`);
+      const machinesResponse = await fetch(`${rutaLocal}/machines`);
       const machinesData = await machinesResponse.json();
       setMachines(machinesData);
     } catch (error) {
@@ -39,20 +43,18 @@ const AssignationsTable = () => {
     }
   };
 
-  // Efecto para cargar las asignaciones y datos de usuarios y máquinas al montar el componente
   useEffect(() => {
+    fetchAllAssignations();
     fetchAssignations();
     fetchUsersAndMachines();
   }, []);
 
-  // Función para eliminar una asignación por su ID
   const handleDeleteAssignation = async (id) => {
     try {
-      const response = await fetch(`${rutaLocal}allassign/${id}`, {
+      const response = await fetch(`${rutaLocal}/allassign/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        // Actualizar la lista de asignaciones después de eliminar
         fetchAssignations();
       } else {
         console.error('Error deleting assignation');
@@ -62,29 +64,25 @@ const AssignationsTable = () => {
     }
   };
 
-  // Función para abrir el modal de edición con los datos actuales
   const handleEditAssignation = (assignation) => {
     setCurrentAssignation(assignation);
     setIsModalOpen(true);
-
   };
 
-  // Función para cerrar el modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentAssignation(null);
   };
 
-  // Función para actualizar una asignación por su ID
   const handleUpdateAssignation = async () => {
-    console.log('Updating assignation:', currentAssignation);  // Agrega un log para depuración
+    console.log('Updating assignation:', currentAssignation);
     try {
-      const response = await fetch(`${rutaLocal}allassign/${currentAssignation.id}`, {
+      const response = await fetch(`${rutaLocal}/allassign/${currentAssignation.id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(currentAssignation)
+        body: JSON.stringify(currentAssignation),
       });
       if (response.ok) {
         fetchAssignations();
@@ -96,71 +94,82 @@ const AssignationsTable = () => {
       console.error('Error updating assignation:', error);
     }
   };
-  
 
-  // Manejar el cambio de los campos de entrada del modal
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(`Updating ${name} to ${value}`);  // Agrega un log para depuración
+    console.log(`Updating ${name} to ${value}`);
     setCurrentAssignation((prev) => ({ ...prev, [name]: value }));
   };
-  
 
   return (
     <>
       <div className="overflow-x-auto mt-40">
-        <table className="table table-xs table-pin-rows table-pin-cols text-center border border-gray-200 p-2">
-          <thead>
-            <tr>
-              <th>Codigo</th>
-              <td>Maquina</td>
-              <td>Referencia</td>
-              <td>H.asignada</td>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {allAssignamentData.map((data) => (
-              <tr key={data.id}>
-                <th>{data.id_usuarios}</th>
-                <td>{data.maquina}</td>
-                <td>{data.nombre_referencia}</td>
-                <td>{data.horas_asignadas}</td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm m-2"
-                    onClick={() => handleDeleteAssignation(data.id)}
-                  >
-                    Borrar
-                  </button>
-                  <button
-                    className="btn btn-primary btn-sm m-2"
-                    onClick={() => handleEditAssignation(data)}
-                  >
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Codigo</th>
-              <td>Maquina</td>
-              <td>Capacidad</td>
-              <th></th>
-            </tr>
-          </tfoot>
-        </table>
+        <button className="btn btn-outline btn-success" onClick={fetchAssignations}>
+          Refrescar Datos
+        </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+          {Object.entries(
+            allAssignamentData.reduce((acc, item) => {
+              const userId = item.id_usuarios;
+              if (!acc[userId]) acc[userId] = [];
+              acc[userId].push(item);
+              return acc;
+            }, {})
+          ).map(([userId, assignations]) => (
+            <div key={userId} className="card bg-base-100 shadow-xl border border-gray-300">
+              <div className="card-body">
+                <h2 className="card-title">Usuario: {userId}</h2>
+                <p className="text-sm text-gray-600">
+                  Total de Máquinas Asignadas: {assignations.length}
+                </p>
+
+                <ol className="list-inside">
+                  {assignations.map((data) => {
+                    const machine = machines.find(m => m.id_maquinas === data.id_maquinas);
+
+                    return (
+                      <li key={data.id} className="mt-2">
+                        <hr />
+                        <div className="flex flex-col">
+                          <span><strong>Máquina:</strong> {data.maquina}</span>
+                          <span><strong>Capacidad:</strong> {machine?.capacidad || 'N/A'}</span>
+                          <span><strong>Estándar:</strong> {data.id_standar}</span>
+                          <span><strong>Referencia:</strong> {data.nombre_referencia}</span>
+                          <span><strong>Horas Asignadas:</strong> {data.horas_asignadas}</span>
+                          <div className="mt-2 flex gap-2">
+                            <button
+                              className="btn btn-sm btn-error"
+                              onClick={() => handleDeleteAssignation(data.id)}
+                            >
+                              Borrar
+                            </button>
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() => handleEditAssignation(data)}
+                            >
+                              Editar
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+
+                    );
+                  })}
+
+
+                </ol>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Modal de edición */}
       {isModalOpen && (
         <div className="modal modal-open">
           <div className="modal-box">
             <h2 className="font-bold text-lg">Editar Asignación</h2>
             <div className="py-4">
-
+              <label>Operario</label>
               <select
                 name="nombre_usuario"
                 value={currentAssignation.id_usuarios}
@@ -174,6 +183,7 @@ const AssignationsTable = () => {
                 ))}
               </select>
 
+              <label>Maquina</label>
               <select
                 name="nombre_maquina"
                 value={currentAssignation.nombre_maquina}
@@ -187,6 +197,17 @@ const AssignationsTable = () => {
                 ))}
               </select>
 
+              <label>Standar</label>
+              <input
+                type="text"
+                name="id_standar"
+                value={currentAssignation.id_standar || ''}
+                onChange={handleInputChange}
+                className="input input-bordered w-full mb-2"
+                placeholder="ID Estándar"
+              />
+
+              <label>Referencia</label>
               <input
                 type="text"
                 name="nombre_referencia"
@@ -195,6 +216,8 @@ const AssignationsTable = () => {
                 className="input input-bordered w-full mb-2"
                 placeholder="Nombre de Referencia"
               />
+
+              <label>Horas asignadas</label>
               <input
                 type="number"
                 name="horas_asignadas"
@@ -204,17 +227,12 @@ const AssignationsTable = () => {
                 placeholder="Horas Asignadas"
               />
             </div>
+
             <div className="modal-action">
-              <button
-                className="btn"
-                onClick={handleUpdateAssignation}
-              >
+              <button className="btn" onClick={handleUpdateAssignation}>
                 Guardar
               </button>
-              <button
-                className="btn"
-                onClick={handleCloseModal}
-              >
+              <button className="btn" onClick={handleCloseModal}>
                 Cancelar
               </button>
             </div>

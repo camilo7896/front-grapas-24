@@ -67,7 +67,7 @@ const UserMachines = () => {
         }
     
         try {
-            const response = await fetch(`${rutaLocal}user-machines`, {
+            const response = await fetch(`${rutaLocal}/user-machines`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

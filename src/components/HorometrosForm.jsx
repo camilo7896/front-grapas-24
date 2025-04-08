@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGlobalContext } from '../context/UserContext';
 
 const UserMachines = () => {
-    const { rutaLocal } = useGlobalContext();
+  const { rutaLocal } = useGlobalContext();
 
 
 
@@ -14,7 +14,7 @@ const UserMachines = () => {
 
   const fetchUserMachines = async () => {
     try {
-      const response = await fetch(`${rutaLocal}allassign/${userId}`);
+      const response = await fetch(`${rutaLocal}/allassign/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setMachines(data);
@@ -77,7 +77,7 @@ const UserMachines = () => {
       </div>
       {selectedAsignacion && (
         <div className="mt-4">
-       
+
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useGlobalContext } from "../context/UserContext";
 
 export default function Login() {
-  const { login,rutaLocal } = useGlobalContext();
+  const { login } = useGlobalContext();
   const [password, setPasswords] = useState('');
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
@@ -13,7 +13,6 @@ export default function Login() {
 
     try {
       const response = await fetch('http://192.168.0.19:3000/api/login', { // Ajusta la URL si es necesario
-      const response = await fetch(`${rutaLocal}/login`, { // Ajusta la URL si es necesario
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +36,7 @@ export default function Login() {
       <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md m-20">
         <div>
           <div className="flex justify-center items-center">
-            <img className="h-32 w-auto object-cover" src="public/logo-productrak.svg" alt="Workflow" />
+            <img className="h-32 w-auto object-cover" src="/logo-productrak.svg" alt="Workflow" />
           </div>
 
 
@@ -53,7 +52,7 @@ export default function Login() {
               placeholder="Ingrese su nombre de usuario"
               onChange={(e) => { setUsername(e.target.value) }}
               required
-              autoComplete="off"
+              autoComplete="on"
             />
           </div>
 

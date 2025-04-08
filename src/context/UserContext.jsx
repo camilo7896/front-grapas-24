@@ -24,19 +24,21 @@ const UserContext = ({ children }) => {
   const [auth, setAuth] = useState(!!localStorage.getItem('token'));
   const [role, setRole] = useState(null); // Agrega el estado del rol
 
+  const [assignations, setAssignations] = useState([]);
+
+
   // ***********************************************************************************************
 
   //Ruta conexiones
-  const rutaLocal = 'http://192.168.0.19:3000/api/';
-   // const rutaLocal = 'http://localhost:3000/api/';
+  // const rutaLocal = 'http://localhost:3000/api/';
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  const rutaLocal = apiUrl || 'http://192.168.0.19:4000/api';
+  const rutaLocal = apiUrl || 'http://192.168.0.19:3000/api';
 
 
 
   // Loggin *******************************************************************+
-  
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('role'); // Asegúrate de que también guardes el rol
@@ -62,14 +64,24 @@ const UserContext = ({ children }) => {
     // Redirige a la página de login
     window.location.href = '/';
   };
-  
+
   // End Loggin ***************************************************************************************
+
+  const fetchAllAssignations = async () => {
+    try {
+      const res = await fetch(`${rutaLocal}/allassign`);
+      const data = await res.json();
+      setAssignations(data);
+    } catch (err) {
+      console.error("Error fetching assignations:", err);
+    }
+  };
 
   //data machines
   const [data, setData] = useState([]);
   useEffect(() => {
     fetch('http://192.168.0.19:3000/api/machines/')
-    fetch(`${rutaLocal}/machines`) 
+    fetch(`${rutaLocal}/machines`)
       .then(response => response.json())
       .then(data => {
         setData(data);
@@ -191,7 +203,7 @@ const UserContext = ({ children }) => {
   const fetchAssignations = async () => {
     try {
       const response = await fetch('http://192.168.0.19:3000/api/allassign');
-      const response = await fetch(`${rutaLocal}/allassign`);
+      // const response = await fetch(`${rutaLocal}/allassign`);
       const data = await response.json();
       setAllAssignament(data);
     } catch (error) {
@@ -237,13 +249,13 @@ const UserContext = ({ children }) => {
       const response = await fetch(`http://192.168.0.19:3000/api/users/${userId}`, {
         method: 'DELETE',
       });
-  
+
       if (!response.ok) {
         // Manejo de errores, por ejemplo, si el servidor devuelve un código de estado 404 o 500
         const errorText = await response.text();
         throw new Error(`Error al eliminar usuario: ${errorText}`);
       }
-  
+
       // Actualizar el estado después de una eliminación exitosa
       setUsersData(usersData.filter(user => user.id_usuarios !== userId));
     } catch (error) {
@@ -251,7 +263,7 @@ const UserContext = ({ children }) => {
       throw error;
     }
   };
-  
+
 
   return (
     <GlobalContext.Provider value={{
@@ -274,6 +286,8 @@ const UserContext = ({ children }) => {
       isVisibleReference,
       setIsVisibleReference,
       toggleVisibilityReference,
+      fetchAllAssignations,
+      assignations,
       assignamentData,
       setAssignament,
       capacity,

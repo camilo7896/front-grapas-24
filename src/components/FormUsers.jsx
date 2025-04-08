@@ -1,7 +1,7 @@
 import { useGlobalContext } from "../context/UserContext";
 
 export default function FormUsers() {
-  const { setUser,rutaLocal } = useGlobalContext();
+  const { setUser, rutaLocal } = useGlobalContext();
 
   const sendData = async (e) => {
     e.preventDefault();
@@ -21,10 +21,9 @@ export default function FormUsers() {
       password: password,
       rol: rol
     };
-//`${rutaLocal}/machines`
+    //`${rutaLocal}/machines`
 
     try {
-      const response = await fetch('http://192.168.0.19:3000/api/users', {
 
       const response = await fetch(`${rutaLocal}/users`, {
 
@@ -69,7 +68,7 @@ export default function FormUsers() {
           placeholder="Nombres"
           name="nombres"
           required
-           autoComplete="off"
+          autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -77,7 +76,7 @@ export default function FormUsers() {
           placeholder="Apellidos"
           name="apellidos"
           required
-           autoComplete="off"
+          autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -85,7 +84,7 @@ export default function FormUsers() {
           placeholder="Usuario"
           name="usuario"
           required
-           autoComplete="off"
+          autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <input
@@ -93,13 +92,13 @@ export default function FormUsers() {
           placeholder="Contraseña"
           name="password"
           required
-           autoComplete="off"
+          autoComplete="off"
           className="input input-bordered input-primary w-full max-w-xl m-2"
         />
         <select
           name="rol"
           required
-           autoComplete="off"
+          autoComplete="off"
           className="select select-bordered select-primary w-full max-w-xl m-2"
         >
           <option value="">Seleccione un rol</option>

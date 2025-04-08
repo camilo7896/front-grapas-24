@@ -5,13 +5,15 @@ import CapacityPanel from '../components/CapacityPanel';
 import AssignationsTable from '../components/AssignationsTable ';
 
 const AsignationPage = () => {
-  const { data: machinesData, usersData, referencesData, setAssignament, capacity, setCapacity,rutaLocal } = useGlobalContext();
+  const { data: machinesData, usersData, referencesData, setAssignament, capacity, setCapacity, rutaLocal } = useGlobalContext();
   const [searchId, setSearchId] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [machines, setMachines] = useState(Array(5).fill(''));
   const [references, setReferences] = useState(Array(5).fill(''));
   const [times, setTimes] = useState(Array(5).fill(''));
   const [standards, setStandards] = useState(Array(5).fill(''));
+  const [showForm, setShowForm] = useState(false);
+
 
   useEffect(() => {
     // Al seleccionar una máquina, actualizar el estándar correspondiente
@@ -25,10 +27,16 @@ const AsignationPage = () => {
     });
   }, [machines, machinesData]);
 
+
+
   const handleSearch = () => {
     const user = usersData.find(user => user.id_usuarios === parseInt(searchId));
     setSelectedUser(user);
+    if (user) {
+      setShowForm(true); // Mostrar el formulario
+    }
   };
+
 
   const handleMachineChange = (index, value) => {
     const selectedMachine = machinesData.find(machine => machine.id_maquinas === parseInt(value));
@@ -49,7 +57,7 @@ const AsignationPage = () => {
     const newStandards = [...standards];
     newStandards[index] = selectedMachine ? selectedMachine.estandar || '' : '';
     setStandards(newStandards);
-    
+
     const newReferences = [...references];
     newReferences[index] = '';
     setReferences(newReferences);
@@ -83,7 +91,7 @@ const AsignationPage = () => {
       alert('Por favor seleccione un usuario');
       return;
     }
-  
+
     const asignaciones = machines.map((machine, machineIndex) => ({
       id_usuarioAsignado: selectedUser.id_usuarios,
       id_maquinaAsignada: machine,
@@ -91,9 +99,8 @@ const AsignationPage = () => {
       horas_asignadas: times[machineIndex] || null,
       id_standar: standards[machineIndex] || null
     })).filter(asignacion => asignacion.id_maquinaAsignada);
-  `${rutaLocal}/login`
+    `${rutaLocal}/login`
     try {
-      const response = await fetch('http://192.168.0.19:3000/api/assignations/multiple', {
       const response = await fetch(`${rutaLocal}/assignations/multiple`, {
         method: 'POST',
         headers: {
@@ -101,14 +108,14 @@ const AsignationPage = () => {
         },
         body: JSON.stringify(asignaciones)
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text(); // Obtener texto del error
         console.error('Error:', errorText);
         alert("Error al crear las asignaciones");
         return;
       }
-  
+
       const data = await response.json();
       console.log('Success:', data);
       alert("Asignaciones creadas exitosamente");
@@ -140,14 +147,15 @@ const AsignationPage = () => {
             />
             <button className="btn btn-primary ml-2" onClick={handleSearch}>Buscar</button>
           </div>
-  
-          {selectedUser && (
+
+          {showForm && selectedUser && (
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className='flex justify-center items-center flex-col'>
                 <h2 className="text-xl font-semibold">Usuario: {selectedUser.nombres} {selectedUser.apellidos}</h2>
                 <CapacityPanel />
               </div>
-  
+
               <p className="font-semibold">Capacidad Total Seleccionada: {capacity}%</p>
               {machines.map((machine, machineIndex) => (
                 <div key={machineIndex} className="space-y-2">
@@ -182,6 +190,10 @@ const AsignationPage = () => {
                     value={times[machineIndex]}
                     onChange={(e) => handleTimeChange(machineIndex, e.target.value)}
                   />
+                  {/* Seleccionar standar getAllAsignaciones */}
+
+
+
                   <input
                     type="text"
                     className={`input input-bordered w-full max-w-xs ${standards[machineIndex] ? 'bg-green-200' : 'bg-white'} m-5`}
@@ -193,8 +205,9 @@ const AsignationPage = () => {
               ))}
               <button type="submit" className="btn btn-primary">Asignar</button>
             </form>
+
           )}
-          <AssignationsTable/>
+          <AssignationsTable />
         </div>
       </div>
     </>
